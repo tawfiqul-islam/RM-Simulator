@@ -102,4 +102,24 @@ public class Job {
     public ArrayList<VM> getPlacementList() {
         return placementList;
     }
+
+    public void setPlacementList(ArrayList<VM> placementList) {
+        this.placementList = placementList;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "jobID='" + jobID + '\'' +
+                ", C=" + C +
+                ", M=" + M +
+                ", E=" + E +
+                ", T_A=" + T_A +
+                ", T_S=" + T_S +
+                ", T_D=" + T_D +
+                ", T_W=" + T_W +
+                ", T_C=" + T_C +
+                ", deadlineMet=" + deadlineMet +
+                '}';
+    }
 }

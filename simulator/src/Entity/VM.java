@@ -85,4 +85,20 @@ public class VM {
     public void setMaxT(long maxT) {
         this.maxT = maxT;
     }
+
+    @Override
+    public String toString() {
+        return "VM{" +
+                "vmID='" + vmID + '\'' +
+                ", C_Cap=" + C_Cap +
+                ", M_Cap=" + M_Cap +
+                ", C_free=" + C_free +
+                ", M_free=" + M_free +
+                ", Price=" + Price +
+                ", isActive=" + isActive +
+                ", isLocal=" + isLocal +
+                ", maxT=" + maxT +
+                ", allocationList=" + allocationList +
+                '}';
+    }
 }
