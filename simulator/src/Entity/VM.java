@@ -3,6 +3,7 @@ package Entity;
 import java.util.ArrayList;
 
 public class VM {
+    private String vmID;
     private int C_Cap;
     private double M_Cap;
     private int C_free;
@@ -12,6 +13,14 @@ public class VM {
     private boolean isLocal;
     private long maxT;
     private ArrayList<Job> allocationList = new ArrayList<>();
+
+    public String getVmID() {
+        return vmID;
+    }
+
+    public void setVmID(String vmID) {
+        this.vmID = vmID;
+    }
 
     public int getC_Cap() {
         return C_Cap;
