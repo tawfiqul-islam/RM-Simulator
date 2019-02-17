@@ -94,4 +94,12 @@ public class Job {
     public void setDeadlineMet(boolean deadlineMet) {
         this.deadlineMet = deadlineMet;
     }
+
+    public void addplacementVM(VM vm) {
+        placementList.add(vm);
+    }
+
+    public ArrayList<VM> getPlacementList() {
+        return placementList;
+    }
 }
