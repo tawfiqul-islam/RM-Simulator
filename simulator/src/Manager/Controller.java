@@ -30,21 +30,44 @@ public class Controller {
         {
             System.out.println(vmList.get(i));
         }*/
-        while(finishedJobs.size()<6) {
+        while(true) {
 
-            Job nextFinishedJob=null;
+            Job currentJob=null;
             if(!Controller.activeJobs.isEmpty())
-                nextFinishedJob=Controller.activeJobs.peek();
+                currentJob=Controller.activeJobs.peek();
 
             Job newJob=null;
             if(!Controller.jobList.isEmpty())
                 newJob=Controller.jobList.get(0);
 
-            if(nextFinishedJob!=null&&newJob!=null) {
-                if((nextFinishedJob.getT_C()<newJob.getT_A())||jobWaiting) {
+            if(newJob==null&&currentJob==null) {
+                break;
+            }
+            else if(newJob!=null&&currentJob==null){
 
-                    wallClockTime=nextFinishedJob.getT_C();
-                    if(nextFinishedJob.getT_C()+nextFinishedJob.getT_W()<nextFinishedJob.getT_D()) {
+                wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
+                jobWaiting=!SimpleScheduler.findSchedule(newJob);
+            }
+            else if(newJob==null&&currentJob!=null){
+                finishCurrentJob(currentJob);
+            }
+            else {
+                if(jobWaiting) {
+                    finishCurrentJob(currentJob);
+                }
+                else if(newJob.getT_A()<currentJob.getT_F()){
+                    wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
+                    jobWaiting=!SimpleScheduler.findSchedule(newJob);
+                }
+                else{
+                    finishCurrentJob(currentJob);
+                }
+            }
+            /*if(nextFinishedJob!=null&&newJob!=null) {
+                if((nextFinishedJob.getT_F()<newJob.getT_A())||jobWaiting) {
+
+                    wallClockTime=nextFinishedJob.getT_F();
+                    if(nextFinishedJob.getT_F()+nextFinishedJob.getT_W()<nextFinishedJob.getT_D()) {
                         nextFinishedJob.setDeadlineMet(true);
                     }
                     else {
@@ -71,8 +94,8 @@ public class Controller {
             else if(newJob==null&&nextFinishedJob!=null) {
                 jobWaiting=false;
 
-                wallClockTime=nextFinishedJob.getT_C();
-                if(nextFinishedJob.getT_C()<nextFinishedJob.getT_D()) {
+                wallClockTime=nextFinishedJob.getT_F();
+                if(nextFinishedJob.getT_F()<nextFinishedJob.getT_D()) {
                     nextFinishedJob.setDeadlineMet(true);
                 }
                 else {
@@ -85,11 +108,25 @@ public class Controller {
             }
             else {
                 //nothing to do
-            }
+            }*/
         }
 
         for(int i=0;i<finishedJobs.size();i++) {
             System.out.println(finishedJobs.get(i).toString());
         }
+    }
+    static void finishCurrentJob(Job currentJob) {
+        wallClockTime=currentJob.getT_F();
+        if(currentJob.getT_F()<currentJob.getT_D()) {
+            currentJob.setDeadlineMet(true);
+        }
+        else {
+            currentJob.setDeadlineMet(false);
+        }
+        Controller.finishedJobs.add(activeJobs.remove());
+        for(int i=0;i<currentJob.getPlacementList().size();i++) {
+            StatusUpdater.addVMresource(currentJob.getPlacementList().get(i),currentJob);
+        }
+        System.out.println("T: "+Controller.wallClockTime+" SUCCESS: Finished execution of job: "+currentJob.getJobID());
     }
 }

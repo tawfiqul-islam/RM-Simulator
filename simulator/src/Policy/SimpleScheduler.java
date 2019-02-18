@@ -8,7 +8,6 @@ import Manager.StatusUpdater;
 public class SimpleScheduler {
 
     public static boolean findSchedule(Job currentJob) {
-        System.out.println("T: "+Controller.wallClockTime+" Trying to schedule job: "+currentJob.getJobID());
 
         for(int j=0,i=0;j<currentJob.getE()&&i<Controller.vmList.size(); ) {
 
@@ -18,8 +17,8 @@ public class SimpleScheduler {
                 StatusUpdater.substractVMresource(vm,currentJob);
                 currentJob.addplacementVM(vm);
                 vm.setActive(true);
-                if(vm.getMaxT()<currentJob.getT_C()) {
-                    vm.setMaxT(currentJob.getT_C());
+                if(vm.getMaxT()<currentJob.getT_F()) {
+                    vm.setMaxT(currentJob.getT_F());
                 }
             }
             else {
@@ -30,7 +29,7 @@ public class SimpleScheduler {
         if(currentJob.getE()==currentJob.getPlacementList().size()) {
             currentJob.setT_S(Controller.wallClockTime);
             currentJob.setT_W(currentJob.getT_S()-currentJob.getT_A());
-            currentJob.setT_C(currentJob.getT_A()+currentJob.getT_W()+currentJob.getT_C());
+            currentJob.setT_F(currentJob.getT_S()+currentJob.getT_est());
 
             Controller.activeJobs.add(currentJob);
             Controller.jobList.remove(currentJob);

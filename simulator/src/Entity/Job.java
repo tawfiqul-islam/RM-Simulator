@@ -11,7 +11,8 @@ public class Job {
     private long T_S;
     private long T_D;
     private long T_W;
-    private long T_C;
+    private long T_F;
+    private long T_est;
     private boolean deadlineMet;
     private ArrayList<VM> placementList = new ArrayList<>();
 
@@ -79,12 +80,20 @@ public class Job {
         T_W = t_W;
     }
 
-    public long getT_C() {
-        return T_C;
+    public long getT_F() {
+        return T_F;
     }
 
-    public void setT_C(long t_C) {
-        T_C = t_C;
+    public void setT_F(long t_F) {
+        T_F = t_F;
+    }
+
+    public long getT_est() {
+        return T_est;
+    }
+
+    public void setT_est(long t_est) {
+        T_est = t_est;
     }
 
     public boolean isDeadlineMet() {
@@ -118,8 +127,10 @@ public class Job {
                 ", T_S=" + T_S +
                 ", T_D=" + T_D +
                 ", T_W=" + T_W +
-                ", T_C=" + T_C +
+                ", T_F=" + T_F +
+                ", T_est=" + T_est +
                 ", deadlineMet=" + deadlineMet +
+                ", placementList=" + placementList +
                 '}';
     }
 }

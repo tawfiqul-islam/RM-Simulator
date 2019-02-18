@@ -37,9 +37,9 @@ public class Utility {
         public int compare(Job a, Job b) {
 
             //to sort jobs with increasing order of completion time
-            if (a.getT_C() < b.getT_C()) {
+            if (a.getT_F() < b.getT_F()) {
                 return -1;
-            } else if (a.getT_C() > b.getT_C()) {
+            } else if (a.getT_F() > b.getT_F()) {
                 return 1;
             } else {
                 return 0;
