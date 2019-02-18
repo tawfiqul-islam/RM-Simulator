@@ -30,14 +30,18 @@ public class Controller {
         {
             System.out.println(vmList.get(i));
         }*/
-        while(jobList.size()!=0) {
-            Job nextFinishedJob=Controller.activeJobs.peek();
-            Job newJob=Controller.jobList.get(0);
+        while(finishedJobs.size()<6) {
 
-            //if nextFinishedJob is going to be finished before the newJob arrival
-            if(nextFinishedJob!=null){
+            Job nextFinishedJob=null;
+            if(!Controller.activeJobs.isEmpty())
+                nextFinishedJob=Controller.activeJobs.peek();
+
+            Job newJob=null;
+            if(!Controller.jobList.isEmpty())
+                newJob=Controller.jobList.get(0);
+
+            if(nextFinishedJob!=null&&newJob!=null) {
                 if((nextFinishedJob.getT_C()<newJob.getT_A())||jobWaiting) {
-                    jobWaiting=false;
 
                     wallClockTime=nextFinishedJob.getT_C();
                     if(nextFinishedJob.getT_C()+nextFinishedJob.getT_W()<nextFinishedJob.getT_D()) {
@@ -50,18 +54,38 @@ public class Controller {
                     for(int i=0;i<nextFinishedJob.getPlacementList().size();i++) {
                         StatusUpdater.addVMresource(nextFinishedJob.getPlacementList().get(i),nextFinishedJob);
                     }
-                    //process finished job
-
+                    System.out.println("T: "+Controller.wallClockTime+" SUCCESS: Finished execution of job: "+nextFinishedJob.getJobID());
+                }
+                else {
+                    //wallClockTime=newJob.getT_A();
+                    //process new job
+                    //call scheduler
+                    jobWaiting=!SimpleScheduler.findSchedule(newJob);
                 }
             }
-            //if newJob arrives before nextFinishedJob's completion
-            else {
-                wallClockTime=newJob.getT_A();
+            else if(nextFinishedJob==null&&newJob!=null) {
                 //process new job
                 //call scheduler
                 jobWaiting=!SimpleScheduler.findSchedule(newJob);
             }
+            else if(newJob==null&&nextFinishedJob!=null) {
+                jobWaiting=false;
 
+                wallClockTime=nextFinishedJob.getT_C();
+                if(nextFinishedJob.getT_C()<nextFinishedJob.getT_D()) {
+                    nextFinishedJob.setDeadlineMet(true);
+                }
+                else {
+                    nextFinishedJob.setDeadlineMet(false);
+                }
+                Controller.finishedJobs.add(activeJobs.remove());
+                for(int i=0;i<nextFinishedJob.getPlacementList().size();i++) {
+                    StatusUpdater.addVMresource(nextFinishedJob.getPlacementList().get(i),nextFinishedJob);
+                }
+            }
+            else {
+                //nothing to do
+            }
         }
 
         for(int i=0;i<finishedJobs.size();i++) {

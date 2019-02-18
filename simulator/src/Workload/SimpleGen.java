@@ -10,22 +10,21 @@ public class SimpleGen {
 
     public static void generateJobs() {
 
-        for(int i=0;i<20;i++) {
+        for(int i=0;i<6;i++) {
             Job nJob = new Job();
-            nJob.setC(2);
+            nJob.setC(4);
             nJob.setM(4);
-            nJob.setE(3);
+            nJob.setE(10);
             nJob.setJobID(UUID.randomUUID().toString());
-            nJob.setT_A(i);
-            nJob.setT_C(50+nJob.getT_A());
-            nJob.setT_D(60+nJob.getT_A());
+            nJob.setT_A(i*40);
+            nJob.setT_C(100);
+            nJob.setT_D(101+nJob.getT_A());
             nJob.setT_W(0);
             Controller.jobList.add(nJob);
         }
     }
 
     public static void generateClusterResources() {
-
 
         //local resources
 

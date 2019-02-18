@@ -8,7 +8,7 @@ import Manager.StatusUpdater;
 public class SimpleScheduler {
 
     public static boolean findSchedule(Job currentJob) {
-        System.out.println("trying to find schedule");
+        System.out.println("T: "+Controller.wallClockTime+" Trying to schedule job: "+currentJob.getJobID());
 
         for(int j=0,i=0;j<currentJob.getE()&&i<Controller.vmList.size(); ) {
 
@@ -16,6 +16,7 @@ public class SimpleScheduler {
             if (resourceConstraints(currentJob,vm)) {
                 j++;
                 StatusUpdater.substractVMresource(vm,currentJob);
+                currentJob.addplacementVM(vm);
                 vm.setActive(true);
                 if(vm.getMaxT()<currentJob.getT_C()) {
                     vm.setMaxT(currentJob.getT_C());
@@ -26,18 +27,15 @@ public class SimpleScheduler {
             }
         }
 
-        System.out.println(currentJob.getE());
-        System.out.println(currentJob.getPlacementList().size());
-
         if(currentJob.getE()==currentJob.getPlacementList().size()) {
             currentJob.setT_S(Controller.wallClockTime);
             currentJob.setT_W(currentJob.getT_S()-currentJob.getT_A());
-            currentJob.setT_C(currentJob.getT_C()+currentJob.getT_W());
+            currentJob.setT_C(currentJob.getT_A()+currentJob.getT_W()+currentJob.getT_C());
 
             Controller.activeJobs.add(currentJob);
             Controller.jobList.remove(currentJob);
 
-            System.out.println("Successfully placed all the executors for job: "+currentJob.getJobID());
+            System.out.println("T: "+Controller.wallClockTime+" SUCCESS: Placed all the executors for job: "+currentJob.getJobID());
             return true;
         }
         else {
@@ -47,6 +45,7 @@ public class SimpleScheduler {
             while(currentJob.getPlacementList().size()!=0) {
                 currentJob.getPlacementList().remove(0);
             }
+            System.out.println("T: "+Controller.wallClockTime+" FAILURE: Not enough resources to place all the executors for job: "+currentJob.getJobID());
             return false;
         }
     }
@@ -54,7 +53,6 @@ public class SimpleScheduler {
     static boolean resourceConstraints(Job currentJob, VM vm) {
 
         if(vm.getC_free()>=currentJob.getC()&&vm.getM_free()>=currentJob.getM()) {
-            currentJob.addplacementVM(vm);
             return true;
         }
         else return false;
