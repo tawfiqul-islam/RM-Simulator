@@ -14,7 +14,7 @@ public class SimpleScheduler {
             VM vm = Controller.vmList.get(i);
             if (resourceConstraints(currentJob,vm)) {
                 j++;
-                StatusUpdater.substractVMresource(vm,currentJob);
+                StatusUpdater.subtractVMresource(vm,currentJob);
                 currentJob.addplacementVM(vm);
                 vm.setActive(true);
                 if(vm.getMaxT()<currentJob.getT_F()) {
@@ -27,6 +27,7 @@ public class SimpleScheduler {
         }
 
         if(currentJob.getE()==currentJob.getPlacementList().size()) {
+
             currentJob.setT_S(Controller.wallClockTime);
             currentJob.setT_W(currentJob.getT_S()-currentJob.getT_A());
             currentJob.setT_F(currentJob.getT_S()+currentJob.getT_est());

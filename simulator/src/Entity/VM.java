@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class VM {
     private String vmID;
+    private String instanceFlavor;
     private int C_Cap;
     private double M_Cap;
     private int C_free;
@@ -12,6 +13,10 @@ public class VM {
     private boolean isActive;
     private boolean isLocal;
     private long maxT;
+    private long T_used;
+    private long T_S;
+    private double cost;
+
     private ArrayList<Job> allocationList = new ArrayList<>();
 
     public String getVmID() {
@@ -20,6 +25,14 @@ public class VM {
 
     public void setVmID(String vmID) {
         this.vmID = vmID;
+    }
+
+    public String getInstanceFlavor() {
+        return instanceFlavor;
+    }
+
+    public void setInstanceFlavor(String instanceFlavor) {
+        this.instanceFlavor = instanceFlavor;
     }
 
     public int getC_Cap() {
@@ -86,19 +99,41 @@ public class VM {
         this.maxT = maxT;
     }
 
+    public long getT_used() {
+        return T_used;
+    }
+
+    public void setT_used(long t_used) {
+        T_used = t_used;
+    }
+
+    public long getT_S() {
+        return T_S;
+    }
+
+    public void setT_S(long t_S) {
+        T_S = t_S;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
     @Override
     public String toString() {
         return "VM{" +
                 "vmID='" + vmID + '\'' +
+                ", instanceFlavor='" + instanceFlavor + '\'' +
                 ", C_Cap=" + C_Cap +
                 ", M_Cap=" + M_Cap +
-                ", C_free=" + C_free +
-                ", M_free=" + M_free +
                 ", Price=" + Price +
-                ", isActive=" + isActive +
                 ", isLocal=" + isLocal +
-                ", maxT=" + maxT +
-                ", allocationList=" + allocationList +
+                ", T_used=" + T_used +
+                ", cost=" + cost +
                 '}';
     }
 }

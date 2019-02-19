@@ -65,6 +65,9 @@ public class SimpleGen {
             vm3.setPrice(0.003);
             vm3.setVmID(UUID.randomUUID().toString());
 
+            vm1.setInstanceFlavor("small");
+            vm2.setInstanceFlavor("medium");
+            vm3.setInstanceFlavor("large");
             Controller.vmList.add(vm1);
             Controller.vmList.add(vm2);
             Controller.vmList.add(vm3);
@@ -109,6 +112,10 @@ public class SimpleGen {
             vm3.setPrice(0.015);
             vm3.setVmID(UUID.randomUUID().toString());
 
+            vm1.setInstanceFlavor("small");
+            vm2.setInstanceFlavor("medium");
+            vm3.setInstanceFlavor("large");
+            
             Controller.vmList.add(vm1);
             Controller.vmList.add(vm2);
             Controller.vmList.add(vm3);
