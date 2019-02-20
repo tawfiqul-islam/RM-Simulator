@@ -45,6 +45,7 @@ public class Controller {
             else {
                 if(jobWaiting) {
                     finishCurrentJob(currentJob);
+                    scheduleNewJob(newJob);
                 }
                 else if(newJob.getT_A()<currentJob.getT_F()){
                     scheduleNewJob(newJob);

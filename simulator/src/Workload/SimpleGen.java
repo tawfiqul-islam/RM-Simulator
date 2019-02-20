@@ -10,13 +10,13 @@ public class SimpleGen {
 
     public static void generateJobs() {
 
-        for(int i=0;i<50;i++) {
+        for(int i=0;i<10;i++) {
             Job nJob = new Job();
             nJob.setC(4);
             nJob.setM(4);
             nJob.setE(5);
             nJob.setJobID(UUID.randomUUID().toString());
-            nJob.setT_A(i*20);
+            nJob.setT_A(i*10);
             nJob.setT_est(100);
             nJob.setT_D(200+nJob.getT_A());
             nJob.setT_W(0);

@@ -1,5 +1,7 @@
 package Entity;
 
+import Manager.Utility;
+
 import java.util.ArrayList;
 
 public class VM {
@@ -16,6 +18,7 @@ public class VM {
     private long T_used;
     private long T_S;
     private double cost;
+    private double resourceTotal;
 
     private ArrayList<Job> allocationList = new ArrayList<>();
 
@@ -123,6 +126,14 @@ public class VM {
         this.cost = cost;
     }
 
+    public double getResourceTotal() {
+        setResourceTotal();
+        return resourceTotal;
+    }
+
+    public void setResourceTotal() {
+        this.resourceTotal = C_free * (1- Utility.resourceSplitThreshold) + M_free * Utility.resourceSplitThreshold;
+    }
     @Override
     public String toString() {
         return "VM{" +

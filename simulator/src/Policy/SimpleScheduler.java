@@ -4,10 +4,15 @@ import Entity.Job;
 import Entity.VM;
 import Manager.Controller;
 import Manager.StatusUpdater;
+import Manager.Utility;
+
+import java.util.Collections;
 
 public class SimpleScheduler {
 
     public static boolean findSchedule(Job currentJob) {
+
+        //Collections.sort(Controller.vmList, new Utility.VMComparator());
 
         for(int j=0,i=0;j<currentJob.getE()&&i<Controller.vmList.size(); ) {
 
