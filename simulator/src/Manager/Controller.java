@@ -2,7 +2,7 @@ package Manager;
 
 import Entity.Job;
 import Entity.VM;
-import Policy.SimpleScheduler;
+import Policy.FirstFitScheduler;
 import Workload.SimpleGen;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public class Controller {
     public static boolean jobWaiting=false;
     public static double totalCost=0;
     public static double deadlineMet=0;
+
     public static void main(String args[]) {
 
         SimpleGen.generateClusterResources();
@@ -95,6 +96,6 @@ public class Controller {
 
     static void scheduleNewJob(Job newJob) {
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
-        jobWaiting=!SimpleScheduler.findSchedule(newJob);
+        jobWaiting=!FirstFitScheduler.findSchedule(newJob);
     }
 }

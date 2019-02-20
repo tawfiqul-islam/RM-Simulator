@@ -8,7 +8,7 @@ import Manager.Utility;
 
 import java.util.Collections;
 
-public class SimpleScheduler {
+public class FirstFitScheduler {
 
     public static boolean findSchedule(Job currentJob) {
 
