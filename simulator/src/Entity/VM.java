@@ -1,6 +1,7 @@
 package Entity;
 
 import Manager.Utility;
+import Settings.Settings;
 
 import java.util.ArrayList;
 
@@ -132,7 +133,7 @@ public class VM {
     }
 
     public void setResourceTotal() {
-        this.resourceTotal = C_free * (1- Utility.resourceSplitThreshold) + M_free * Utility.resourceSplitThreshold;
+        this.resourceTotal = C_free * (1- Settings.resourceSplitThreshold) + M_free * Settings.resourceSplitThreshold;
     }
     @Override
     public String toString() {

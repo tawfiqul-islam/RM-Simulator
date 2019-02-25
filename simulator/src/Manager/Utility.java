@@ -7,8 +7,6 @@ import java.util.Comparator;
 
 public class Utility {
 
-    public static final double resourceSplitThreshold=0.2;
-
     public static class VMComparator implements Comparator<VM> {
         @Override
         public int compare(VM a, VM b) {

@@ -21,6 +21,10 @@ public class Controller {
 
     public static void main(String args[]) {
 
+        //Load Settings
+        Settings.SettingsLoader.loadSettings();
+
+        //Generate Workload
         SimpleGen.generateClusterResources();
         SimpleGen.generateJobs();
 
