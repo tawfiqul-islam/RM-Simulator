@@ -1,7 +1,5 @@
 package Settings;
 
-import Manager.Utility;
-
 import java.util.Properties;
 import java.lang.*;
 import java.io.*;
@@ -28,30 +26,30 @@ public class SettingsLoader {
             // load a properties file
             prop.load(input);
 
-            Settings.simulatorHome=prop.getProperty("simulator.home");
-            Settings.workloadType=Integer.parseInt(prop.getProperty("workload.type"));
-            Settings.queuePolicy=Integer.parseInt(prop.getProperty("queue.policy"));
-            Settings.schedulerPolicy=Integer.parseInt(prop.getProperty("scheduler.policy"));
-            Settings.resourceSplitThreshold=Double.parseDouble(prop.getProperty("resourceSplitThreshold"));
+            Configurations.simulatorHome=prop.getProperty("simulator.home");
+            Configurations.workloadType=Integer.parseInt(prop.getProperty("workload.type"));
+            Configurations.queuePolicy=Integer.parseInt(prop.getProperty("queue.policy"));
+            Configurations.schedulerPolicy=Integer.parseInt(prop.getProperty("scheduler.policy"));
+            Configurations.resourceSplitThreshold=Double.parseDouble(prop.getProperty("resourceSplitThreshold"));
 
-            Settings.jobTotal=Integer.parseInt(prop.getProperty("job.total"));
-            Settings.jobArrival=Integer.parseInt(prop.getProperty("job.arrival"));
+            Configurations.jobTotal=Integer.parseInt(prop.getProperty("job.total"));
+            Configurations.jobArrival=Integer.parseInt(prop.getProperty("job.arrival"));
 
-            Settings.cloudVMType1=Integer.parseInt(prop.getProperty("cloud.vm.type1"));
-            Settings.cloudVMType2=Integer.parseInt(prop.getProperty("cloud.vm.type2"));
-            Settings.cloudVMType3=Integer.parseInt(prop.getProperty("cloud.vm.type3"));
+            Configurations.cloudVMType1=Integer.parseInt(prop.getProperty("cloud.vm.type1"));
+            Configurations.cloudVMType2=Integer.parseInt(prop.getProperty("cloud.vm.type2"));
+            Configurations.cloudVMType3=Integer.parseInt(prop.getProperty("cloud.vm.type3"));
 
-            Settings.localVMType1=Integer.parseInt(prop.getProperty("local.vm.type1"));
-            Settings.localVMType2=Integer.parseInt(prop.getProperty("local.vm.type2"));
-            Settings.localVMType3=Integer.parseInt(prop.getProperty("local.vm.type3"));
+            Configurations.localVMType1=Integer.parseInt(prop.getProperty("local.vm.type1"));
+            Configurations.localVMType2=Integer.parseInt(prop.getProperty("local.vm.type2"));
+            Configurations.localVMType3=Integer.parseInt(prop.getProperty("local.vm.type3"));
 
-            Settings.cloudVMPrice1=Double.parseDouble(prop.getProperty("cloud.vm.price1"));
-            Settings.cloudVMPrice2=Double.parseDouble(prop.getProperty("cloud.vm.price2"));
-            Settings.cloudVMPrice3=Double.parseDouble(prop.getProperty("cloud.vm.price3"));
+            Configurations.cloudVMPrice1=Double.parseDouble(prop.getProperty("cloud.vm.price1"));
+            Configurations.cloudVMPrice2=Double.parseDouble(prop.getProperty("cloud.vm.price2"));
+            Configurations.cloudVMPrice3=Double.parseDouble(prop.getProperty("cloud.vm.price3"));
 
-            Settings.localVMPrice1=Double.parseDouble(prop.getProperty("local.vm.price1"));
-            Settings.localVMPrice2=Double.parseDouble(prop.getProperty("local.vm.price2"));
-            Settings.localVMPrice3=Double.parseDouble(prop.getProperty("local.vm.price3"));
+            Configurations.localVMPrice1=Double.parseDouble(prop.getProperty("local.vm.price1"));
+            Configurations.localVMPrice2=Double.parseDouble(prop.getProperty("local.vm.price2"));
+            Configurations.localVMPrice3=Double.parseDouble(prop.getProperty("local.vm.price3"));
 
 
         } catch (IOException ex) {

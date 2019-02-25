@@ -3,10 +3,14 @@ package Manager;
 import Entity.Job;
 import Entity.VM;
 import Policy.FirstFitScheduler;
+import Policy.GIOScheduler;
+import Settings.Configurations;
 import Workload.SimpleGen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 
 public class Controller {
 
@@ -21,12 +25,23 @@ public class Controller {
 
     public static void main(String args[]) {
 
-        //Load Settings
+        //Load Configurations
         Settings.SettingsLoader.loadSettings();
 
         //Generate Workload
         SimpleGen.generateClusterResources();
         SimpleGen.generateJobs();
+
+        //Choose Queue Policy
+        if(Configurations.queuePolicy==1) {
+            Collections.sort(jobList, new Utility.JobComparatorFCFS());
+        }
+        else if(Configurations.queuePolicy==2) {
+            Collections.sort(jobList, new Utility.JobComparatorEDFplusFCFS());
+        }
+        else {
+            Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No queueing policy provided");
+        }
 
         while(true) {
 
@@ -35,8 +50,9 @@ public class Controller {
                 currentJob=Controller.activeJobs.peek();
 
             Job newJob=null;
-            if(!Controller.jobList.isEmpty())
-                newJob=Controller.jobList.get(0);
+            if(!Controller.jobList.isEmpty()) {
+                newJob = Controller.jobList.get(0);
+            }
 
             if(newJob==null&&currentJob==null) {
                 break;
@@ -93,13 +109,33 @@ public class Controller {
         }
         Controller.finishedJobs.add(activeJobs.remove());
         for(int i=0;i<currentJob.getPlacementList().size();i++) {
-            StatusUpdater.addVMresource(currentJob.getPlacementList().get(i),currentJob);
+            for(int j=0;j< Controller.vmList.size();j++)
+                if(Controller.vmList.get(j).getVmID().equals(currentJob.getPlacementList().get(i)))
+                    StatusUpdater.addVMresource(Controller.vmList.get(j),currentJob);
         }
         System.out.println("T: "+Controller.wallClockTime+" SUCCESS: Finished execution of job: "+currentJob.getJobID());
     }
 
     static void scheduleNewJob(Job newJob) {
+
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
-        jobWaiting=!FirstFitScheduler.findSchedule(newJob);
+
+        //Choose Scheduler
+        if(Configurations.schedulerPolicy==1){
+            jobWaiting=!FirstFitScheduler.findSchedule(newJob);
+        }
+        else if(Configurations.schedulerPolicy==2) {
+            jobWaiting=!GIOScheduler.findSchedule(newJob);
+        }
+        else if(Configurations.schedulerPolicy==3) {
+
+        }
+        else if(Configurations.schedulerPolicy==4) {
+
+        }
+        else{
+            Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
+            System.out.println("invalid scheduling policy");
+        }
     }
 }

@@ -1,5 +1,7 @@
 package Entity;
 
+import Manager.Controller;
+
 import java.util.ArrayList;
 
 public class Job {
@@ -14,7 +16,7 @@ public class Job {
     private long T_F;
     private long T_est;
     private boolean deadlineMet;
-    private ArrayList<VM> placementList = new ArrayList<>();
+    private ArrayList<String> placementList = new ArrayList<String>();
 
     public String getJobID() {
         return jobID;
@@ -104,20 +106,24 @@ public class Job {
         this.deadlineMet = deadlineMet;
     }
 
-    public void addplacementVM(VM vm) {
-        placementList.add(vm);
+    public void addplacementVM(String vmID) {
+        placementList.add(vmID);
     }
 
-    public ArrayList<VM> getPlacementList() {
+    public ArrayList<String> getPlacementList() {
         return placementList;
     }
 
-    public void setPlacementList(ArrayList<VM> placementList) {
+    public void setPlacementList(ArrayList<String> placementList) {
         this.placementList = placementList;
     }
 
     @Override
     public String toString() {
+        String str="";
+        for(int i=0;i<placementList.size();i++) {
+                    str+=placementList.get(i)+", ";
+        }
         return "Job{" +
                 "jobID='" + jobID + '\'' +
                 ", C=" + C +
@@ -130,7 +136,7 @@ public class Job {
                 ", T_F=" + T_F +
                 ", T_est=" + T_est +
                 ", deadlineMet=" + deadlineMet +
-                ", placementList=" + placementList +
+                ", placementList=" + str +
                 '}';
     }
 }

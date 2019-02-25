@@ -1,7 +1,6 @@
 package Entity;
 
-import Manager.Utility;
-import Settings.Settings;
+import Settings.Configurations;
 
 import java.util.ArrayList;
 
@@ -16,6 +15,7 @@ public class VM {
     private boolean isActive;
     private boolean isLocal;
     private long maxT;
+    private long prevMaxT;
     private long T_used;
     private long T_S;
     private double cost;
@@ -103,6 +103,14 @@ public class VM {
         this.maxT = maxT;
     }
 
+    public long getPrevMaxT() {
+        return prevMaxT;
+    }
+
+    public void setPrevMaxT(long prevMaxT) {
+        this.prevMaxT = prevMaxT;
+    }
+
     public long getT_used() {
         return T_used;
     }
@@ -133,7 +141,7 @@ public class VM {
     }
 
     public void setResourceTotal() {
-        this.resourceTotal = C_free * (1- Settings.resourceSplitThreshold) + M_free * Settings.resourceSplitThreshold;
+        this.resourceTotal = C_free * (1- Configurations.resourceSplitThreshold) + M_free * Configurations.resourceSplitThreshold;
     }
     @Override
     public String toString() {

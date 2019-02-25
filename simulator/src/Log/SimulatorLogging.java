@@ -1,6 +1,8 @@
 
 package Log;
 
+import Settings.Configurations;
+
 import java.io.IOException;
 import java.util.logging.*;
 
@@ -12,7 +14,7 @@ public class SimulatorLogging {
     private SimulatorLogging() throws IOException {
 
         logger = Logger.getLogger(SimulatorLogging.class.getName());
-        fileHandler = new FileHandler(Settings.Settings.simulatorHome+"/logs/simulatorLog.txt", true);
+        fileHandler = new FileHandler(Configurations.simulatorHome+"/logs/simulatorLog.txt", true);
         plainText = new SimpleFormatter();
         fileHandler.setFormatter(plainText);
         logger.addHandler(fileHandler);

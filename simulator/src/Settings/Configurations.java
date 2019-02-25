@@ -5,7 +5,7 @@ package Settings;
  *
  * @author: Muhammed Tawfiqul Islam
  */
-public class Settings {
+public class Configurations {
 
 
     public static String simulatorHome;

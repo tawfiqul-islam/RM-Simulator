@@ -44,6 +44,39 @@ public class Utility {
         }
     }
 
+    public static class JobComparatorEDFplusFCFS implements Comparator<Job> {
+        @Override
+        public int compare(Job a, Job b) {
+
+            if (a.getT_D() < b.getT_D()) {
+                return -1;
+            } else if (a.getT_D() > b.getT_D()) {
+                return 1;
+            } else {
+                if (a.getT_A() < b.getT_A()) {
+                    return -1;
+                } else if (a.getT_A() > b.getT_A()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    public static class JobComparatorFCFS implements Comparator<Job> {
+        @Override
+        public int compare(Job a, Job b) {
+
+            if (a.getT_A() < b.getT_A()) {
+                return -1;
+            } else if (a.getT_A() > b.getT_A()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
 
     public static Comparator<Job> JobComparator = new Comparator<Job>() {
 
