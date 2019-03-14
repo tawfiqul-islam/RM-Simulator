@@ -2,6 +2,8 @@ package Policy;
 
 import Entity.VM;
 import Entity.Job;
+import Manager.Controller;
+import Manager.StatusUpdater;
 import scpsolver.lpsolver.LinearProgramSolver;
 import scpsolver.lpsolver.SolverFactory;
 import scpsolver.problems.LPSolution;
@@ -10,195 +12,126 @@ import scpsolver.problems.LPWizardConstraint;
 import java.util.logging.Level;
 import java.util.ArrayList;
 
-
 public class ILPScheduler {
 
-    /*public static void main(String[] args) {
-        LPWizard lpw = new LPWizard();
-        lpw.setMinProblem(true);
-        lpw.plus("x1",5.0).plus("x2",10.0);
-        lpw.addConstraint("c1",8,"<=").plus("x1",3.0).plus("x2",1.0);
-        lpw.addConstraint("c2",4,"<=").plus("x2",4.0);
-        LPWizardConstraint p1=lpw.addConstraint("c3", 2, ">=");
-        p1.plus("x1",2.0);
-        lpw.setAllVariablesInteger();
-        LinearProgramSolver solver  = SolverFactory.newDefault();
-        LPSolution lpsol =lpw.solve(solver);
-        if(lpsol.getObjectiveValue()==0) {
-            System.out.println("model is infeasible");
-        } else {
-            System.out.println(lpsol.toString());
-        }
-        ArrayList<Constraint> consList = new ArrayList<>();
-        consList=lpw.getLP().getConstraints();
-        for (int i=0;i<consList.size();i++)
-        {
-            System.out.println(consList.get(i).getName()+": RHS: "+consList.get(i).getRHS());
-        }
-    }*/
+    public static boolean findSchedule(Job job) {
+        ArrayList<VM> tmpVmList = (ArrayList<VM>) Controller.vmList.clone();
 
-    /*public static void main(String[] args) {
         LPWizard lpw = new LPWizard();
         lpw.setMinProblem(true);
-        lpw.plus("x1",5.0);
-        lpw.plus("x2",10.0);
-        LPWizardConstraint lpconsfirst=lpw.addConstraint("c1",8,"<=");
-        lpconsfirst.plus("x1",3.0);
-        lpconsfirst.plus("x2",1.0);
-        lpw.addConstraint("c2",4,"<=").plus("x2",4.0);
-        lpconsfirst=lpw.addConstraint("c3", 2, ">=");
-        lpconsfirst.plus("x1",2.0);
-        lpw.setAllVariablesInteger();
-        LinearProgramSolver solver  = SolverFactory.newDefault();
-        LPSolution lpsol =lpw.solve(solver);
-        if(lpsol.getObjectiveValue()==0) {
-            System.out.println("model is infeasible");
-        } else {
-            System.out.println(lpsol.toString());
-        }
-        ArrayList<Constraint> consList;
-        consList=lpw.getLP().getConstraints();
-        for (int i=0;i<consList.size();i++)
-        {
-            System.out.println(consList.get(i).getName()+": RHS: "+consList.get(i).getRHS());
-        }
-        System.out.println(lpw.getLP().getConstraints().size());
-    }*/
-    /*
-    public static boolean placeExecutorILP(Job currentJob,Class classVar)
-    {
-        Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": in ILP Function");
-        SchedulerUtil.placementTime=System.currentTimeMillis();
-        ArrayList<Agent> placedAgents = new ArrayList<>();
-        LPWizard lpw = new LPWizard();
-        lpw.setMinProblem(true);
-
         //set objective function: agent selection as decision variables
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            lpw.plus("x-"+SchedulerUtil.agentList.get(i).getId(),SchedulerUtil.agentList.get(i).getPrice());
-            lpw.setBoolean("x-"+SchedulerUtil.agentList.get(i).getId());
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            lpw.plus("x-" + tmpVmList.get(i).getVmID(), tmpVmList.get(i).getPrice()*Math.max(Controller.wallClockTime+job.getT_est(),tmpVmList.get(i).getMaxT()));
+            lpw.setBoolean("x-" + tmpVmList.get(i).getVmID());
         }
-        //totalCost constraint
-        double totalCost=0;
 
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            totalCost+=SchedulerUtil.agentList.get(i).getPrice();
+        //totalCost constraint
+        double totalCost = 0;
+
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            totalCost += tmpVmList.get(i).getPrice()*Math.max(Controller.wallClockTime+job.getT_est(),tmpVmList.get(i).getMaxT());
         }
-        LPWizardConstraint totalCostCons = lpw.addConstraint("tc_cons",totalCost,">=");
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            totalCostCons.plus("x-"+SchedulerUtil.agentList.get(i).getId(),SchedulerUtil.agentList.get(i).getPrice());
+        LPWizardConstraint totalCostCons = lpw.addConstraint("tc_cons", totalCost, ">=");
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            totalCostCons.plus("x-" + tmpVmList.get(i).getVmID(), tmpVmList.get(i).getPrice()*Math.max(Controller.wallClockTime+job.getT_est(),tmpVmList.get(i).getMaxT()));
         }
 
         //set constraints: 1. executor placement constraint-> 1 executor in at most 1 agent
-        for(int i=0;i<currentJob.getExecutors();i++) {
+        for (int i = 0; i < job.getE(); i++) {
 
-            LPWizardConstraint tmpsConsP = lpw.addConstraint("pc"+i,1,"=");
+            LPWizardConstraint tmpsConsP = lpw.addConstraint("pc" + i, 1, "=");
 
-            for(int j=0;j<SchedulerUtil.agentList.size();j++) {
-                tmpsConsP.plus("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(),1);
-                lpw.setBoolean("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId());
+            for (int j = 0; j < tmpVmList.size(); j++) {
+                tmpsConsP.plus("y-" + i + "-" + tmpVmList.get(j).getVmID(), 1);
+                lpw.setBoolean("y-" + i + "-" + tmpVmList.get(j).getVmID());
             }
         }
 
         //set constraints: 2. agent capacity constraint
         //cpu
-        for(int j=0;j<SchedulerUtil.agentList.size();j++) {
+        for (int j = 0; j < tmpVmList.size(); j++) {
 
-            LPWizardConstraint tmpsConsCC = lpw.addConstraint("cc_cpu"+j,0,">=");
+            LPWizardConstraint tmpsConsCC = lpw.addConstraint("cc_cpu" + j, 0, ">=");
 
-            for(int i=0;i<currentJob.getExecutors();i++) {
-                tmpsConsCC.plus("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(),currentJob.getCoresPerExecutor());
+            for (int i = 0; i < job.getE(); i++) {
+                tmpsConsCC.plus("y-" + i + "-" + tmpVmList.get(j).getVmID(), job.getC());
             }
 
-            tmpsConsCC.plus("x-"+SchedulerUtil.agentList.get(j).getId(),-SchedulerUtil.agentList.get(j).getCpu());
+            tmpsConsCC.plus("x-" + tmpVmList.get(j).getVmID(), -tmpVmList.get(j).getC_free());
         }
 
         //memory
-        for(int j=0;j<SchedulerUtil.agentList.size();j++) {
+        for (int j = 0; j < tmpVmList.size(); j++) {
 
-            LPWizardConstraint tmpsConsCM = lpw.addConstraint("cc_mem"+j,0,">=");
+            LPWizardConstraint tmpsConsCM = lpw.addConstraint("cc_mem" + j, 0, ">=");
 
-            for(int i=0;i<currentJob.getExecutors();i++) {
-                tmpsConsCM.plus("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(),Math.ceil(currentJob.getTotalExecutorMemory()));
+            for (int i = 0; i < job.getE(); i++) {
+                tmpsConsCM.plus("y-" + i + "-" + tmpVmList.get(j).getVmID(), Math.ceil(job.getM()));
             }
-            tmpsConsCM.plus("x-"+SchedulerUtil.agentList.get(j).getId(),-SchedulerUtil.agentList.get(j).getMem());
+            tmpsConsCM.plus("x-" + tmpVmList.get(j).getVmID(), -tmpVmList.get(j).getM_free());
 
         }
 
         //bound constraints
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            lpw.addConstraint("bc0-x-"+SchedulerUtil.agentList.get(i).getId(), 0, "<=").plus("x-"+SchedulerUtil.agentList.get(i).getId(),1);
-            lpw.addConstraint("bc1-x-"+SchedulerUtil.agentList.get(i).getId(), 1, ">=").plus("x-"+SchedulerUtil.agentList.get(i).getId(),1);
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            lpw.addConstraint("bc0-x-" + tmpVmList.get(i).getVmID(), 0, "<=").plus("x-" + tmpVmList.get(i).getVmID(), 1);
+            lpw.addConstraint("bc1-x-" + tmpVmList.get(i).getVmID(), 1, ">=").plus("x-" + tmpVmList.get(i).getVmID(), 1);
 
         }
-        for(int i=0;i<currentJob.getExecutors();i++) {
-            for(int j=0;j<SchedulerUtil.agentList.size();j++) {
-                lpw.addConstraint("bc0-y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(), 0, "<=").plus("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(),1);
-                lpw.addConstraint("bc1-y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(), 1, ">=").plus("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId(),1);
+        for (int i = 0; i < job.getE(); i++) {
+            for (int j = 0; j < tmpVmList.size(); j++) {
+                lpw.addConstraint("bc0-y-" + i + "-" + tmpVmList.get(j).getVmID(), 0, "<=").plus("y-" + i + "-" + tmpVmList.get(j).getVmID(), 1);
+                lpw.addConstraint("bc1-y-" + i + "-" + tmpVmList.get(j).getVmID(), 1, ">=").plus("y-" + i + "-" + tmpVmList.get(j).getVmID(), 1);
             }
         }
 
         //already turned-on machine constraints
-        *//* ************************** *//*
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            if(SchedulerUtil.agentList.get(i).isUsed()) {
-                lpw.addConstraint("active-x-"+SchedulerUtil.agentList.get(i).getId(), 1, "=").plus("x-"+SchedulerUtil.agentList.get(i).getId(),1);
+        /* ************************** */
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            if (tmpVmList.get(i).isActive()) {
+                lpw.addConstraint("active-x-" + tmpVmList.get(i).getVmID(), 1, "=").plus("x-" + tmpVmList.get(i).getVmID(), 1);
             }
         }
-        *//*Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": Total Constraints: "+lpw.getLP().getConstraints().size());
+        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Total Constraints: "+lpw.getLP().getConstraints().size());
         for (int i=0;i< lpw.getLP().getConstraints().size();i++) {
-            Log.SchedulerLogging.log(Level.INFO,"constraint-"+i+": "+lpw.getLP().getConstraints().get(i).getName());
-        }*//*
-        Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": Solving LP");
-        LinearProgramSolver solver  = SolverFactory.newDefault();
-        LPSolution lpsol =lpw.solve(solver);
-
-        Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": Finished solving LP. Objective Value: "+lpsol.getObjectiveValue());
-        Log.SchedulerLogging.log(Level.INFO,LPSolver.class.getName() +"\n"+ lpsol.toString());
-
-        for(int i=0;i<SchedulerUtil.agentList.size();i++) {
-            Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() +": " +SchedulerUtil.agentList.get(i).getId()+"-> CPU-"+SchedulerUtil.agentList.get(i).getCpu()+" MEM-"+SchedulerUtil.agentList.get(i).getMem());
+            Log.SimulatorLogging.log(Level.INFO,"constraint-"+i+": "+lpw.getLP().getConstraints().get(i).getName());
         }
-        Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": current job->coresPerExec: "+currentJob.getCoresPerExecutor()+" memPerExec: "+currentJob.getMemPerExecutor()+" E: "+currentJob.getExecutors());
-        double objVal=lpsol.getObjectiveValue();
-        //objVal=Math.floor(objVal * 100 + 0.5) / 100;
-        if((objVal == Math.floor(objVal)) && !Double.isInfinite(objVal)&&objVal>0&&objVal<=totalCost) {
-            // Log.SchedulerLogging.log(Level.INFO,LPSolver.class.getName() + lpsol.toString());
-            for (int i = 0; i < currentJob.getExecutors(); i++) {
-                for (int j = 0; j < SchedulerUtil.agentList.size(); j++) {
-                    if (lpsol.getBoolean("y-"+i+"-"+SchedulerUtil.agentList.get(j).getId())) {
-                        if (SchedulerUtil.agentList.get(j).getCpu() >= currentJob.getCoresPerExecutor() &&
-                                SchedulerUtil.agentList.get(j).getMem() >= Math.ceil(currentJob.getTotalExecutorMemory())) {
+        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Solving LP");
+        LinearProgramSolver solver = SolverFactory.newDefault();
+        LPSolution lpsol = lpw.solve(solver);
 
-                            SchedulerUtil.agentList.get(j).setCpu(SchedulerUtil.agentList.get(j).getCpu() - currentJob.getCoresPerExecutor());
-                            SchedulerUtil.agentList.get(j).setMem(SchedulerUtil.agentList.get(j).getMem() - Math.ceil(currentJob.getTotalExecutorMemory()));
-                            placedAgents.add(SchedulerUtil.agentList.get(j));
-                            Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + "Added Agent " + placedAgents.get(placedAgents.size() - 1).getId());
+        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Finished solving LP. Objective Value: " + lpsol.getObjectiveValue());
+        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + "\n" + lpsol.toString());
+
+        for (int i = 0; i < tmpVmList.size(); i++) {
+            Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": " + tmpVmList.get(i).getVmID() + "-> CPU-" + tmpVmList.get(i).getC_free() + " MEM-" + tmpVmList.get(i).getM_free());
+        }
+        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": current job->coresPerExec: " + job.getC() + " memPerExec: " + job.getM() + " E: " + job.getE());
+        double objVal = lpsol.getObjectiveValue();
+        //objVal=Math.floor(objVal * 100 + 0.5) / 100;
+        if ((objVal == Math.floor(objVal)) && !Double.isInfinite(objVal) && objVal > 0 && objVal <= totalCost) {
+            // Log.SchedulerLogging.log(Level.INFO,LPSolver.class.getName() + lpsol.toString());
+            for (int i = 0; i < job.getE(); i++) {
+                for (int j = 0; j < tmpVmList.size(); j++) {
+                    if (lpsol.getBoolean("y-" + i + "-" + tmpVmList.get(j).getVmID())) {
+                        if (tmpVmList.get(j).getC_free() >= job.getC() &&
+                                tmpVmList.get(j).getM_free() >= job.getM()) {
+
+                            StatusUpdater.subtractVMresource(tmpVmList.get(j),job);
+                            job.addplacementVM(tmpVmList.get(j).getVmID());
+                            Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + "Added Agent " + job.getPlacementList().get(job.getPlacementList().size() - 1));
                             break;
                         }
                     }
                 }
             }
 
-            if(placedAgents.size()<currentJob.getExecutors()) {
-                Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": Model is infeasible to solve, returning failure, no exec placed");
-                for(int i=0;i<placedAgents.size();i++){
-                    placedAgents.get(i).setCpu(placedAgents.get(i).getCpu() + currentJob.getCoresPerExecutor());
-                    placedAgents.get(i).setMem(placedAgents.get(i).getMem() + Math.ceil(currentJob.getTotalExecutorMemory()));
-                }
-                return false;
-            }
-            SchedulerUtil.placementTime=System.currentTimeMillis()-SchedulerUtil.placementTime;
-            //if success
-            currentJob.setAllocatedExecutors(currentJob.getExecutors());
-            SchedulerUtil.resourceReservation(placedAgents, currentJob, classVar);
+            //TODO Resource Reservationfor real implemnetation
+            //SchedulerUtil.resourceReservation(chosenVMs, job, classVar);
             //calculate time //TODO
 
-            return true;
         }
-        else {
-            Log.SchedulerLogging.log(Level.INFO, LPSolver.class.getName() + ": Model is infeasible to solve, returning failure, obj not integer");
-            return false;
-        }
-    }*/
+        //TODO where to check?
+        return SchedulerUtility.placeExecutors(tmpVmList,job);
+    }
 }

@@ -44,6 +44,8 @@ public class GIOScheduler {
             }
         }
 
+        //TODO implement DeadlineFailed Queue and push the predicted fails in that queue and continue
+        //TODO change settings files to reflect these changes
         return SchedulerUtility.placeExecutors(tmpVmList,job);
     }
 }

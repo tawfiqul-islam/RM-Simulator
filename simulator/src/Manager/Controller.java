@@ -4,6 +4,7 @@ import Entity.Job;
 import Entity.VM;
 import Policy.FirstFitScheduler;
 import Policy.GIOScheduler;
+import Policy.ILPScheduler;
 import Settings.Configurations;
 import Workload.SimpleGen;
 
@@ -27,7 +28,7 @@ public class Controller {
 
         //Load Configurations
         Settings.SettingsLoader.loadSettings();
-
+        Log.SimulatorLogging.log(Level.INFO,Controller.class.getName()+": Loaded Settings from Configuration File");
         //Generate Workload
         SimpleGen.generateClusterResources();
         SimpleGen.generateJobs();
@@ -128,7 +129,7 @@ public class Controller {
             jobWaiting=!GIOScheduler.findSchedule(newJob);
         }
         else if(Configurations.schedulerPolicy==3) {
-
+            jobWaiting=!ILPScheduler.findSchedule(newJob);
         }
         else if(Configurations.schedulerPolicy==4) {
 
