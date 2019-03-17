@@ -92,24 +92,29 @@ public class ILPScheduler {
                 lpw.addConstraint("active-x-" + tmpVmList.get(i).getVmID(), 1, "=").plus("x-" + tmpVmList.get(i).getVmID(), 1);
             }
         }
-        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Total Constraints: "+lpw.getLP().getConstraints().size());
+        /*Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Total Constraints: "+lpw.getLP().getConstraints().size());
         for (int i=0;i< lpw.getLP().getConstraints().size();i++) {
             Log.SimulatorLogging.log(Level.INFO,"constraint-"+i+": "+lpw.getLP().getConstraints().get(i).getName());
-        }
+        }*/
         Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Solving LP");
         LinearProgramSolver solver = SolverFactory.newDefault();
         LPSolution lpsol = lpw.solve(solver);
 
         Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": Finished solving LP. Objective Value: " + lpsol.getObjectiveValue());
-        Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + "\n" + lpsol.toString());
-
+        //Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + "\n" + lpsol.toString());
+/*
         for (int i = 0; i < tmpVmList.size(); i++) {
             Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": " + tmpVmList.get(i).getVmID() + "-> CPU-" + tmpVmList.get(i).getC_free() + " MEM-" + tmpVmList.get(i).getM_free());
-        }
+        }*/
         Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ": current job->coresPerExec: " + job.getC() + " memPerExec: " + job.getM() + " E: " + job.getE());
         double objVal = lpsol.getObjectiveValue();
         //objVal=Math.floor(objVal * 100 + 0.5) / 100;
-        if ((objVal == Math.floor(objVal)) && !Double.isInfinite(objVal) && objVal > 0 && objVal <= totalCost) {
+        System.out.println(objVal);
+        System.out.println("totalcost: "+totalCost);
+        //(objVal == Math.floor(objVal)) &&
+        if ( !Double.isInfinite(objVal) && objVal > 0 && objVal <= totalCost) {
+            Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ":objval loop inside****** ");
+            //System.exit(0);
             // Log.SchedulerLogging.log(Level.INFO,LPSolver.class.getName() + lpsol.toString());
             for (int i = 0; i < job.getE(); i++) {
                 for (int j = 0; j < tmpVmList.size(); j++) {
