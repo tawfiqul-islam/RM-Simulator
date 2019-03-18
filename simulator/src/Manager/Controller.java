@@ -26,6 +26,7 @@ public class Controller {
 
     public static void main(String args[]) {
 
+
         //Load Configurations
         Settings.SettingsLoader.loadSettings();
         Log.SimulatorLogging.log(Level.INFO,Controller.class.getName()+": Loaded Settings from Configuration File");
