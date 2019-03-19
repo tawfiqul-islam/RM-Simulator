@@ -15,11 +15,9 @@ public class FirstFitScheduler {
 
         Collections.sort(Controller.vmList, new Utility.VMComparator());
 
-        ArrayList<VM> tmpVmList =(ArrayList<VM>)Controller.vmList.clone();
+        for(int j=0,i=0;j<job.getE()&&i<Controller.vmList.size(); ) {
 
-        for(int j=0,i=0;j<job.getE()&&i<tmpVmList.size(); ) {
-
-            VM vm = tmpVmList.get(i);
+            VM vm = Controller.vmList.get(i);
             if (SchedulerUtility.resourceConstraints(job,vm)) {
                 j++;
                 StatusUpdater.subtractVMresource(vm,job);
@@ -30,6 +28,6 @@ public class FirstFitScheduler {
             }
         }
 
-        return SchedulerUtility.placeExecutors(tmpVmList,job);
+        return SchedulerUtility.placeExecutors(job);
     }
 }

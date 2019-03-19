@@ -83,7 +83,9 @@ public class Controller {
             }
         }
 
-
+        /*for(int i=0;i<Controller.vmList.size();i++) {
+            System.out.println(Controller.vmList.get(i).getVmID()+" "+Controller.vmList.get(i).isActive()+Controller.vmList.get(i).getC_free()+" "+Controller.vmList.get(i).getM_free());
+        }*/
 
         deadlineMet=0;
         totalCost=0;

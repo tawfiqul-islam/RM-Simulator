@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class GIOScheduler {
 
     public static boolean findSchedule(Job job) {
-        ArrayList <VM> tmpVmList =(ArrayList<VM>)Controller.vmList.clone();
 
         int j=0;
         while(true) {
@@ -19,8 +18,8 @@ public class GIOScheduler {
             double currentCost=1000000.0;
             int vmIndex=0;
 
-            for (int i = 0 ; i < tmpVmList.size();i++ ) {
-                VM vm = tmpVmList.get(i);
+            for (int i = 0 ; i < Controller.vmList.size();i++ ) {
+                VM vm = Controller.vmList.get(i);
                 if (SchedulerUtility.resourceConstraints(job, vm)) {
                     placementFound=true;
                     double tmpT=vm.getMaxT() >= (Controller.wallClockTime+job.getT_est())?0:(Controller.wallClockTime+job.getT_est()-vm.getMaxT());
@@ -32,8 +31,8 @@ public class GIOScheduler {
                 }
             }
             if(placementFound){
-                StatusUpdater.subtractVMresource(tmpVmList.get(vmIndex),job);
-                job.addplacementVM(tmpVmList.get(vmIndex).getVmID());
+                StatusUpdater.subtractVMresource(Controller.vmList.get(vmIndex),job);
+                job.addplacementVM(Controller.vmList.get(vmIndex).getVmID());
                 j++;
             }
             else {
@@ -46,6 +45,6 @@ public class GIOScheduler {
 
         //TODO implement DeadlineFailed Queue and push the predicted fails in that queue and continue
         //TODO change settings files to reflect these changes
-        return SchedulerUtility.placeExecutors(tmpVmList,job);
+        return SchedulerUtility.placeExecutors(job);
     }
 }

@@ -19,10 +19,10 @@ public class Utility {
                 return 0;
             }*/
 
-            if(!a.isActive()&&b.isActive()) {
+            if(a.isActive()&&!b.isActive()) {
                 return -1;
             }
-            else if(a.isActive()&&!b.isActive()) {
+            else if(!a.isActive()&&b.isActive()) {
                 return 1;
             }
             else if(a.getPrice()<b.getPrice()) {

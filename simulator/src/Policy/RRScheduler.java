@@ -9,12 +9,10 @@ import java.util.ArrayList;
 public class RRScheduler {
     public static boolean findSchedule(Job job) {
 
-        ArrayList<VM> tmpVmList =(ArrayList<VM>) Controller.vmList.clone();
-
         boolean found=false;
         for(int j=0,i=0;j<job.getE();i++) {
 
-            if(i==tmpVmList.size()){
+            if(i==Controller.vmList.size()){
                 i=0;
 
                 if(!found)
@@ -22,7 +20,7 @@ public class RRScheduler {
 
                 found=false;
             }
-            VM vm = tmpVmList.get(i);
+            VM vm = Controller.vmList.get(i);
             if (SchedulerUtility.resourceConstraints(job,vm)) {
                 j++;
                 StatusUpdater.subtractVMresource(vm,job);
@@ -31,6 +29,6 @@ public class RRScheduler {
             }
         }
 
-        return SchedulerUtility.placeExecutors(tmpVmList,job);
+        return SchedulerUtility.placeExecutors(job);
     }
 }
