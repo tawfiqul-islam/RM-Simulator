@@ -118,12 +118,16 @@ public class Job {
         this.placementList = placementList;
     }
 
-    @Override
-    public String toString() {
+    public String getPlacementListStr(){
         String str="";
         for(int i=0;i<placementList.size();i++) {
-                    str+=placementList.get(i)+", ";
+            str+=placementList.get(i)+" ";
         }
+        return str;
+    }
+    @Override
+    public String toString() {
+
         return "Job{" +
                 "jobID='" + jobID + '\'' +
                 ", C=" + C +
@@ -136,7 +140,7 @@ public class Job {
                 ", T_F=" + T_F +
                 ", T_est=" + T_est +
                 ", deadlineMet=" + deadlineMet +
-                ", placementList=" + str +
+                ", placementList=" + getPlacementListStr() +
                 '}';
     }
 }

@@ -5,9 +5,13 @@ import Entity.VM;
 import Policy.FirstFitScheduler;
 import Policy.GIOScheduler;
 import Policy.ILPScheduler;
+import Policy.RRScheduler;
 import Settings.Configurations;
 import Workload.SimpleGen;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -80,6 +84,9 @@ public class Controller {
         }
 
 
+
+        deadlineMet=0;
+        totalCost=0;
         System.out.println("\n\n*********** JOBS ***********\n\n");
         for(int i=0;i<finishedJobs.size();i++) {
             if(finishedJobs.get(i).isDeadlineMet()) {
@@ -98,6 +105,9 @@ public class Controller {
 
         System.out.println("\n\n***Total Cost for the Scheduler: "+totalCost+"$");
         System.out.println("\n\n***Deadline Met: "+(deadlineMet/finishedJobs.size())*100+"%");
+
+        writeJobResults();
+        writeVMResults();
 
     }
 
@@ -133,11 +143,130 @@ public class Controller {
             jobWaiting=!ILPScheduler.findSchedule(newJob);
         }
         else if(Configurations.schedulerPolicy==4) {
-
+            jobWaiting=!RRScheduler.findSchedule(newJob);
         }
         else{
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
             System.out.println("invalid scheduling policy");
         }
+    }
+
+    public static void writeJobResults()
+    {
+        PrintWriter pw=null;
+        try {
+            pw = new PrintWriter(new File(Configurations.simulatorHome+"/jobs.csv"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("id");
+        sb.append(',');
+        sb.append("CPU (cores)");
+        sb.append(',');
+        sb.append("Memory (GB)");
+        sb.append(',');
+        sb.append("Executor");
+        sb.append(',');
+        sb.append("Arrival Time (T_A)");
+        sb.append(',');
+        sb.append("Start Time (T_S)");
+        sb.append(',');
+        sb.append("Finish Time (T_F)");
+        sb.append(',');
+        sb.append("Estimated Finish Time (T_est)");
+        sb.append(',');
+        sb.append("Deadline Violation Time (T_D)");
+        sb.append(',');
+        sb.append("Deadline Satisfied");
+        sb.append(',');
+        sb.append("Placement List");
+
+        sb.append('\n');
+
+        for(int i=0;i< finishedJobs.size();i++) {
+            sb.append(finishedJobs.get(i).getJobID());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getC());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getM());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getE());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_A());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_S());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_F());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_est());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_D());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).isDeadlineMet());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getPlacementListStr());
+
+            sb.append('\n');
+        }
+
+        sb.append('\n');
+        sb.append("Total Jobs: ,"+Configurations.jobTotal+"\n");
+        sb.append("Deadline Met: ,"+deadlineMet+"\n");
+        sb.append("Deadline Met Percentage: ,"+(deadlineMet*100.0)/Configurations.jobTotal+"%\n");
+        pw.write(sb.toString());
+        pw.close();
+    }
+
+    public static void writeVMResults()
+    {
+        PrintWriter pw=null;
+        try {
+            pw = new PrintWriter(new File(Configurations.simulatorHome+"/VMs.csv"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("id");
+        sb.append(',');
+        sb.append("Location");
+        sb.append(',');
+        sb.append("Instance Flavor");
+        sb.append(',');
+        sb.append("CPU Capacity");
+        sb.append(',');
+        sb.append("Memory Capacity");
+        sb.append(',');
+        sb.append("Price (AUD$)");
+        sb.append(',');
+        sb.append("Total Active Time (T_used)");
+        sb.append(',');
+        sb.append("Total Cost (AUD$)");
+        sb.append('\n');
+
+        for(int i=0;i< vmList.size();i++) {
+            sb.append(vmList.get(i).getVmID());
+            sb.append(',');
+            sb.append(vmList.get(i).isLocal()?"Local":"Cloud");
+            sb.append(',');
+            sb.append(vmList.get(i).getInstanceFlavor());
+            sb.append(',');
+            sb.append(vmList.get(i).getC_Cap());
+            sb.append(',');
+            sb.append(vmList.get(i).getM_Cap());
+            sb.append(',');
+            sb.append(vmList.get(i).getPrice());
+            sb.append(',');
+            sb.append(vmList.get(i).getT_used());
+            sb.append(',');
+            sb.append(vmList.get(i).getCost());
+            sb.append('\n');
+        }
+
+        sb.append('\n');
+        sb.append("Total Cost: ,"+totalCost+"\n");
+        pw.write(sb.toString());
+        pw.close();
     }
 }

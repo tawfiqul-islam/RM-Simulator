@@ -4,14 +4,16 @@ import Entity.Job;
 import Entity.VM;
 import Manager.Controller;
 import Manager.StatusUpdater;
+import Manager.Utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FirstFitScheduler {
 
     public static boolean findSchedule(Job job) {
 
-        //Collections.sort(Controller.vmList, new Utility.VMComparator());
+        Collections.sort(Controller.vmList, new Utility.VMComparator());
 
         ArrayList<VM> tmpVmList =(ArrayList<VM>)Controller.vmList.clone();
 

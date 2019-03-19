@@ -11,15 +11,15 @@ public class Utility {
         @Override
         public int compare(VM a, VM b) {
 
-            if (a.getResourceTotal() < b.getResourceTotal()) {
+            /*if (a.getResourceTotal() < b.getResourceTotal()) {
                 return -1;
             } else if (a.getResourceTotal() > b.getResourceTotal()) {
                 return 1;
             } else {
                 return 0;
-            }
+            }*/
 
-            /*if(!a.isActive()&&b.isActive()) {
+            if(!a.isActive()&&b.isActive()) {
                 return -1;
             }
             else if(a.isActive()&&!b.isActive()) {
@@ -40,7 +40,7 @@ public class Utility {
                 } else {
                     return 0;
                 }
-            }*/
+            }
         }
     }
 
