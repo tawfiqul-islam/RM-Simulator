@@ -1,5 +1,5 @@
 package Workload;
-
+import java.util.Random;
 import Entity.Job;
 import Entity.VM;
 import Manager.Controller;
@@ -9,7 +9,30 @@ import java.util.UUID;
 
 public class SimpleGen {
 
-    public static void generateJobs() {
+    private static int getPoissonRandom(double mean) {
+        Random r = new Random();
+        double L = Math.exp(-mean);
+        int k = 0;
+        double p = 1.0;
+        do {
+            p = p * r.nextDouble();
+            k++;
+        } while (p > L);
+        return k - 1;
+    }
+
+    public static void main(String args[]) {
+        double avg=0;
+        for(int mean=10;mean<=100;mean+=10)
+            for(int i=0;i<10;i++) {
+                int current =getPoissonRandom(mean);
+                avg+=current;
+                System.out.println(current);
+            }
+        System.out.println(avg/100);
+    }
+    public static void generateJobSimple() {
+
 
         //jobs
         for(int i = 0; i< Configurations.jobTotal; i++) {
@@ -26,6 +49,26 @@ public class SimpleGen {
             Controller.jobList.add(job);
         }
     }
+
+    public static void generateJobRandom() {
+
+        Random ran = new Random();
+        //jobs
+        for(int i = 0; i< Configurations.jobTotal; i++) {
+            Job job = new Job();
+            job.setC(1+ran.nextInt(6));
+            job.setM(4+ran.nextInt(9));
+            job.setE(1 + ran.nextInt(8));
+            //job.setJobID(UUID.randomUUID().toString());
+            job.setJobID("job-"+i);
+            job.setT_A(i*10);
+            job.setT_est(100);
+            job.setT_D(200+job.getT_A());
+            job.setT_W(0);
+            Controller.jobList.add(job);
+        }
+    }
+
 
     public static void generateClusterResources() {
 

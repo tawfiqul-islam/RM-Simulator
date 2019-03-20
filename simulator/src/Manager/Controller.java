@@ -36,7 +36,7 @@ public class Controller {
         Log.SimulatorLogging.log(Level.INFO,Controller.class.getName()+": Loaded Settings from Configuration File");
         //Generate Workload
         SimpleGen.generateClusterResources();
-        SimpleGen.generateJobs();
+        SimpleGen.generateJobSimple();
 
         //Choose Queue Policy
         if(Configurations.queuePolicy==1) {
