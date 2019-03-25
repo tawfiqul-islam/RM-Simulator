@@ -1,4 +1,7 @@
 package Workload;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Random;
 import Entity.Job;
 import Entity.VM;
@@ -21,7 +24,7 @@ public class SimpleGen {
         return k - 1;
     }
 
-    public static void main(String args[]) {
+    private static void generatePoissonArrivals(){
         double avg=0;
         for(int mean=10;mean<=100;mean+=10)
             for(int i=0;i<10;i++) {
@@ -31,8 +34,15 @@ public class SimpleGen {
             }
         System.out.println(avg/100);
     }
-    public static void generateJobSimple() {
 
+    public static void main(String args[]) {
+
+        //Load Configurations
+        Settings.SettingsLoader.loadSettings();
+        randomJobGenerator();
+
+    }
+    public static void generateJobSimple() {
 
         //jobs
         for(int i = 0; i< Configurations.jobTotal; i++) {
@@ -50,6 +60,54 @@ public class SimpleGen {
         }
     }
 
+    public static void randomJobGenerator() {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new File(Configurations.simulatorHome + "/workload_jobs.csv"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        Random ran = new Random();
+        sb.append("job-id");
+        sb.append(',');
+        sb.append("C");
+        sb.append(',');
+        sb.append("M");
+        sb.append(',');
+        sb.append("E");
+        sb.append(',');
+        sb.append("T_A");
+        sb.append(',');
+        sb.append("T_est");
+        sb.append(',');
+        sb.append("T_D");
+        sb.append('\n');
+        //jobs
+        for (int i = 0; i < Configurations.jobTotal; i++) {
+
+            sb.append("job-" + i); //job-id
+            sb.append(',');
+            sb.append(1 + ran.nextInt(6));//cores
+            sb.append(',');
+            sb.append(4 + ran.nextInt(9));//memory
+            sb.append(',');
+            sb.append(1 + ran.nextInt(8));//executors
+            sb.append(',');
+            int T_A=1 + ran.nextInt(86400);
+            sb.append(T_A);
+            sb.append(',');
+            int T_est=50 + ran.nextInt(250);
+            sb.append(T_est);
+            sb.append(',');
+            sb.append(T_A + T_est + ran.nextInt(300));//T_D
+
+            sb.append('\n');
+        }
+
+        pw.write(sb.toString());
+        pw.close();
+    }
     public static void generateJobRandom() {
 
         Random ran = new Random();
@@ -61,9 +119,9 @@ public class SimpleGen {
             job.setE(1 + ran.nextInt(8));
             //job.setJobID(UUID.randomUUID().toString());
             job.setJobID("job-"+i);
-            job.setT_A(i*10);
-            job.setT_est(100);
-            job.setT_D(200+job.getT_A());
+            job.setT_A(1 + ran.nextInt(2000));
+            job.setT_est(50 + ran.nextInt(250));
+            job.setT_D(job.getT_A()+job.getT_est()+ran.nextInt(300));
             job.setT_W(0);
             Controller.jobList.add(job);
         }
