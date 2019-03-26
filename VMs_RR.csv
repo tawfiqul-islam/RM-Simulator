@@ -1,0 +1,15 @@
+id,Location,Instance Flavor,CPU Capacity,Memory Capacity,Price (AUD$),Total Active Time (T_used),Total Cost (AUD$)
+C-s-0,Cloud,small,4,16,0.005,343082,1715.41
+C-s-1,Cloud,small,4,16,0.005,326296,1631.48
+C-s-2,Cloud,small,4,16,0.005,305289,1526.445
+C-m-0,Cloud,medium,8,32,0.01,429022,4290.22
+C-m-1,Cloud,medium,8,32,0.01,410302,4103.02
+C-m-2,Cloud,medium,8,32,0.01,388235,3882.35
+C-l-0,Cloud,large,12,48,0.015,388239,5823.585
+C-l-1,Cloud,large,12,48,0.015,349133,5236.995
+C-l-2,Cloud,large,12,48,0.015,297596,4463.94
+L-s-0,Local,small,4,16,0.001,109666,109.666
+L-m-0,Local,medium,8,32,0.002,206534,413.068
+L-l-0,Local,large,12,48,0.003,153971,461.913
+
+Total Cost: ,33658.092
