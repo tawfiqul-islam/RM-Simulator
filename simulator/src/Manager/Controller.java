@@ -7,6 +7,7 @@ import Policy.GIOScheduler;
 import Policy.ILPScheduler;
 import Policy.RRScheduler;
 import Settings.Configurations;
+import Workload.CSVReader;
 import Workload.SimpleGen;
 
 import java.io.File;
@@ -30,13 +31,12 @@ public class Controller {
 
     public static void main(String args[]) {
 
-
         //Load Configurations
         Settings.SettingsLoader.loadSettings();
         Log.SimulatorLogging.log(Level.INFO,Controller.class.getName()+": Loaded Settings from Configuration File");
         //Generate Workload
         SimpleGen.generateClusterResources();
-        SimpleGen.generateJobSimple();
+        CSVReader.parseJobs();
 
         //Choose Queue Policy
         if(Configurations.queuePolicy==1) {
@@ -134,6 +134,7 @@ public class Controller {
 
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
 
+        long schedulingDelay=System.currentTimeMillis();
         //Choose Scheduler
         if(Configurations.schedulerPolicy==1){
             jobWaiting=!FirstFitScheduler.findSchedule(newJob);
@@ -151,6 +152,8 @@ public class Controller {
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
             System.out.println("invalid scheduling policy");
         }
+        schedulingDelay=System.currentTimeMillis()-schedulingDelay;
+        System.out.println("Scheduling Delay: "+schedulingDelay/1000.0+" second");
     }
 
     public static void writeJobResults()
@@ -176,6 +179,8 @@ public class Controller {
         sb.append(',');
         sb.append("Finish Time (T_F)");
         sb.append(',');
+        sb.append("Waiting Time (T_W)");
+        sb.append(',');
         sb.append("Estimated Finish Time (T_est)");
         sb.append(',');
         sb.append("Deadline Violation Time (T_D)");
@@ -200,6 +205,8 @@ public class Controller {
             sb.append(finishedJobs.get(i).getT_S());
             sb.append(',');
             sb.append(finishedJobs.get(i).getT_F());
+            sb.append(',');
+            sb.append(finishedJobs.get(i).getT_W());
             sb.append(',');
             sb.append(finishedJobs.get(i).getT_est());
             sb.append(',');

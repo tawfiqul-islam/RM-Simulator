@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Job {
     private String jobID;
     private int C;
-    private double M;
+    private int M;
     private int E;
     private long T_A;
     private long T_S;
@@ -34,11 +34,11 @@ public class Job {
         C = c;
     }
 
-    public double getM() {
+    public int getM() {
         return M;
     }
 
-    public void setM(double m) {
+    public void setM(int m) {
         M = m;
     }
 

@@ -8,9 +8,9 @@ public class VM {
     private String vmID;
     private String instanceFlavor;
     private int C_Cap;
-    private double M_Cap;
+    private int M_Cap;
     private int C_free;
-    private double M_free;
+    private int M_free;
     private double Price;
     private boolean isActive;
     private boolean isLocal;
@@ -47,11 +47,11 @@ public class VM {
         C_Cap = c_Cap;
     }
 
-    public double getM_Cap() {
+    public int getM_Cap() {
         return M_Cap;
     }
 
-    public void setM_Cap(double m_Cap) {
+    public void setM_Cap(int m_Cap) {
         M_Cap = m_Cap;
     }
 
@@ -63,11 +63,11 @@ public class VM {
         C_free = c_free;
     }
 
-    public double getM_free() {
+    public int getM_free() {
         return M_free;
     }
 
-    public void setM_free(double m_free) {
+    public void setM_free(int m_free) {
         M_free = m_free;
     }
 

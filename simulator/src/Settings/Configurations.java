@@ -18,6 +18,9 @@ public class Configurations {
 
     public static int jobTotal;
     public static int jobArrival;
+    public static int poissonMean;
+    public static double lambda;
+    public static int deadlineTolerance;
 
     public static int cloudVMType1;
     public static int cloudVMType2;
@@ -35,4 +38,6 @@ public class Configurations {
     public static double localVMPrice1;
     public static double localVMPrice2;
     public static double localVMPrice3;
+
+
 }

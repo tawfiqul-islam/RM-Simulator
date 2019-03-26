@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class SimpleGen {
 
+    //poisson distribution
     private static int getPoissonRandom(double mean) {
         Random r = new Random();
         double L = Math.exp(-mean);
@@ -24,43 +25,27 @@ public class SimpleGen {
         return k - 1;
     }
 
-    private static void generatePoissonArrivals(){
-        double avg=0;
-        for(int mean=10;mean<=100;mean+=10)
-            for(int i=0;i<10;i++) {
-                int current =getPoissonRandom(mean);
-                avg+=current;
-                System.out.println(current);
-            }
-        System.out.println(avg/100);
+    /*A conceptually very simple method for generating exponential variates is based on inverse transform sampling:
+     Given a random variate U drawn from the uniform distribution on the unit interval (0, 1)
+     */
+
+    //exponential distribution
+    public static double getNextExp(double lambda) {
+        Random ran = new Random();
+        return  Math.log(1-ran.nextDouble())/(-lambda);
     }
 
     public static void main(String args[]) {
 
         //Load Configurations
         Settings.SettingsLoader.loadSettings();
-        randomJobGenerator();
+
+        generateWorkload();
 
     }
-    public static void generateJobSimple() {
 
-        //jobs
-        for(int i = 0; i< Configurations.jobTotal; i++) {
-            Job job = new Job();
-            job.setC(4);
-            job.setM(4);
-            job.setE(5);
-            //job.setJobID(UUID.randomUUID().toString());
-            job.setJobID("job-"+i);
-            job.setT_A(i*10);
-            job.setT_est(100);
-            job.setT_D(200+job.getT_A());
-            job.setT_W(0);
-            Controller.jobList.add(job);
-        }
-    }
-
-    public static void randomJobGenerator() {
+    public static void generateWorkload() {
+        int T_A=0;
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new File(Configurations.simulatorHome + "/workload_jobs.csv"));
@@ -94,13 +79,13 @@ public class SimpleGen {
             sb.append(',');
             sb.append(1 + ran.nextInt(8));//executors
             sb.append(',');
-            int T_A=1 + ran.nextInt(86400);
+            T_A+=getPoissonRandom(Configurations.poissonMean);
             sb.append(T_A);
             sb.append(',');
-            int T_est=50 + ran.nextInt(250);
+            int T_est=(int)(10+ getNextExp(Configurations.lambda));
             sb.append(T_est);
             sb.append(',');
-            sb.append(T_A + T_est + ran.nextInt(300));//T_D
+            sb.append(T_A + T_est + ran.nextInt(Configurations.deadlineTolerance));//T_D
 
             sb.append('\n');
         }
@@ -108,6 +93,24 @@ public class SimpleGen {
         pw.write(sb.toString());
         pw.close();
     }
+
+    public static void generateJobSimple() {
+        //jobs
+        for(int i = 0; i< Configurations.jobTotal; i++) {
+            Job job = new Job();
+            job.setC(4);
+            job.setM(4);
+            job.setE(5);
+            //job.setJobID(UUID.randomUUID().toString());
+            job.setJobID("job-"+i);
+            job.setT_A(i*10);
+            job.setT_est(100);
+            job.setT_D(200+job.getT_A());
+            job.setT_W(0);
+            Controller.jobList.add(job);
+        }
+    }
+
     public static void generateJobRandom() {
 
         Random ran = new Random();
@@ -240,8 +243,5 @@ public class SimpleGen {
             vm3.setInstanceFlavor("large");
             Controller.vmList.add(vm3);
         }
-
-
-
     }
 }

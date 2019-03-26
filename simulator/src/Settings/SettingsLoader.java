@@ -34,6 +34,9 @@ public class SettingsLoader {
 
             Configurations.jobTotal=Integer.parseInt(prop.getProperty("job.total"));
             Configurations.jobArrival=Integer.parseInt(prop.getProperty("job.arrival"));
+            Configurations.poissonMean=Integer.parseInt(prop.getProperty("poisson.mean"));
+            Configurations.lambda=Double.parseDouble(prop.getProperty("lambda"));
+            Configurations.deadlineTolerance=Integer.parseInt(prop.getProperty("deadline.tolerance"));
 
             Configurations.cloudVMType1=Integer.parseInt(prop.getProperty("cloud.vm.type1"));
             Configurations.cloudVMType2=Integer.parseInt(prop.getProperty("cloud.vm.type2"));
