@@ -143,6 +143,7 @@ public class VM {
     public void setResourceTotal() {
         this.resourceTotal = C_free * (1- Configurations.resourceSplitThreshold) + M_free * Configurations.resourceSplitThreshold;
     }
+
     @Override
     public String toString() {
         return "VM{" +
@@ -150,7 +151,10 @@ public class VM {
                 ", instanceFlavor='" + instanceFlavor + '\'' +
                 ", C_Cap=" + C_Cap +
                 ", M_Cap=" + M_Cap +
+                ", C_free=" + C_free +
+                ", M_free=" + M_free +
                 ", Price=" + Price +
+                ", isActive=" + isActive +
                 ", isLocal=" + isLocal +
                 ", T_used=" + T_used +
                 ", cost=" + cost +

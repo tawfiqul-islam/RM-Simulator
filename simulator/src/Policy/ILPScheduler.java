@@ -16,6 +16,11 @@ public class ILPScheduler {
 
     public static boolean findSchedule(Job job) {
 
+        /*System.out.println("VM status before ILP");
+        for (int i= 0;i< Controller.vmList.size();i++) {
+            System.out.println(Controller.vmList.get(i));
+        }*/
+
         LPWizard lpw = new LPWizard();
         lpw.setMinProblem(true);
         //set objective function: agent selection as decision variables
@@ -24,7 +29,7 @@ public class ILPScheduler {
             double vmTime=0;
             if(Controller.vmList.get(i).isActive()) {
                 vmTime=Controller.vmList.get(i).getMaxT()-(Controller.wallClockTime+job.getT_est());
-                if(vmTime<=0) {
+                if(vmTime>=0) {
                     vmTime=0;
                 }
                 else {
@@ -114,6 +119,7 @@ public class ILPScheduler {
         double objVal = lpsol.getObjectiveValue();
         //objVal=Math.floor(objVal * 100 + 0.5) / 100;
         System.out.println("objval: "+objVal);
+        //System.out.println("ILP SOlutioN: "+lpsol.toString());
         //(objVal == Math.floor(objVal)) &&
         if ( !Double.isInfinite(objVal) && objVal > 0 ) {
             //Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ":objval loop inside****** ");

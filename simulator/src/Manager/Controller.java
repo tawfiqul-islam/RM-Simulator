@@ -28,6 +28,7 @@ public class Controller {
     public static boolean jobWaiting=false;
     public static double totalCost=0;
     public static double deadlineMet=0;
+    public static double schedulingDelayTotal=0;
 
     public static void main(String args[]) {
 
@@ -89,11 +90,13 @@ public class Controller {
 
         deadlineMet=0;
         totalCost=0;
+        schedulingDelayTotal=0;
         System.out.println("\n\n*********** JOBS ***********\n\n");
         for(int i=0;i<finishedJobs.size();i++) {
             if(finishedJobs.get(i).isDeadlineMet()) {
                 deadlineMet+=1;
             }
+            schedulingDelayTotal+=finishedJobs.get(i).getSchedulingDelay();
             System.out.println(finishedJobs.get(i).toString());
         }
 
@@ -107,6 +110,7 @@ public class Controller {
 
         System.out.println("\n\n***Total Cost for the Scheduler: "+totalCost+"$");
         System.out.println("\n\n***Deadline Met: "+(deadlineMet/finishedJobs.size())*100+"%");
+        System.out.println("\n\n***Average Scheduling Delay: "+schedulingDelayTotal/finishedJobs.size()+" seconds");
 
         writeJobResults();
         writeVMResults();
@@ -152,8 +156,12 @@ public class Controller {
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
             System.out.println("invalid scheduling policy");
         }
-        schedulingDelay=System.currentTimeMillis()-schedulingDelay;
-        System.out.println("Scheduling Delay: "+schedulingDelay/1000.0+" second");
+        schedulingDelay=(System.currentTimeMillis()-schedulingDelay)/1000;
+        if(!jobWaiting)
+        {
+            newJob.setSchedulingDelay(schedulingDelay);
+        }
+        System.out.println("Scheduling Delay: "+schedulingDelay+" second");
     }
 
     public static void writeJobResults()
@@ -180,6 +188,8 @@ public class Controller {
         sb.append("Finish Time (T_F)");
         sb.append(',');
         sb.append("Waiting Time (T_W)");
+        sb.append(',');
+        sb.append("Scheduler Delay (seconds)");
         sb.append(',');
         sb.append("Estimated Finish Time (T_est)");
         sb.append(',');
@@ -208,6 +218,8 @@ public class Controller {
             sb.append(',');
             sb.append(finishedJobs.get(i).getT_W());
             sb.append(',');
+            sb.append(finishedJobs.get(i).getSchedulingDelay());
+            sb.append(',');
             sb.append(finishedJobs.get(i).getT_est());
             sb.append(',');
             sb.append(finishedJobs.get(i).getT_D());
@@ -223,6 +235,7 @@ public class Controller {
         sb.append("Total Jobs: ,"+Configurations.jobTotal+"\n");
         sb.append("Deadline Met: ,"+deadlineMet+"\n");
         sb.append("Deadline Met Percentage: ,"+(deadlineMet*100.0)/Configurations.jobTotal+"%\n");
+        sb.append("Average Scheduler Delay: ,"+schedulingDelayTotal/Configurations.jobTotal+" seconds\n");
         pw.write(sb.toString());
         pw.close();
     }

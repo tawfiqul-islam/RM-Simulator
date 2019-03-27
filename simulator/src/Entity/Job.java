@@ -15,6 +15,7 @@ public class Job {
     private long T_W;
     private long T_F;
     private long T_est;
+    private double schedulingDelay;
     private boolean deadlineMet;
     private ArrayList<String> placementList = new ArrayList<String>();
 
@@ -104,6 +105,14 @@ public class Job {
 
     public void setDeadlineMet(boolean deadlineMet) {
         this.deadlineMet = deadlineMet;
+    }
+
+    public double getSchedulingDelay() {
+        return schedulingDelay;
+    }
+
+    public void setSchedulingDelay(double schedulingDelay) {
+        this.schedulingDelay = schedulingDelay;
     }
 
     public void addplacementVM(String vmID) {
