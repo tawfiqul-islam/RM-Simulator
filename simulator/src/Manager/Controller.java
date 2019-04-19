@@ -30,6 +30,9 @@ public class Controller {
     public static double deadlineMet=0;
     public static double schedulingDelayTotal=0;
 
+    public static int jobWaitedTotal=0;
+    public static String fileSuffixStr;
+
     public static void main(String args[]) {
 
         //Load Configurations
@@ -51,7 +54,6 @@ public class Controller {
         }
 
         while(true) {
-
             Job currentJob=null;
             if(!Controller.activeJobs.isEmpty())
                 currentJob=Controller.activeJobs.peek();
@@ -96,6 +98,9 @@ public class Controller {
             if(finishedJobs.get(i).isDeadlineMet()) {
                 deadlineMet+=1;
             }
+            if(finishedJobs.get(i).isWaited()) {
+                jobWaitedTotal+=1;
+            }
             schedulingDelayTotal+=finishedJobs.get(i).getSchedulingDelay();
             System.out.println(finishedJobs.get(i).toString());
         }
@@ -111,10 +116,26 @@ public class Controller {
         System.out.println("\n\n***Total Cost for the Scheduler: "+totalCost+"$");
         System.out.println("\n\n***Deadline Met: "+(deadlineMet/finishedJobs.size())*100+"%");
         System.out.println("\n\n***Average Scheduling Delay: "+schedulingDelayTotal/finishedJobs.size()+" seconds");
-
+        System.out.println("\n\n***Job Waited: "+jobWaitedTotal);
+        setFileStrSuffix();
         writeJobResults();
         writeVMResults();
 
+    }
+    static void setFileStrSuffix()
+    {
+        if(Configurations.schedulerPolicy==1){
+            fileSuffixStr="FF";
+        }
+        else if(Configurations.schedulerPolicy==2) {
+            fileSuffixStr="GIO";
+        }
+        else if(Configurations.schedulerPolicy==3) {
+            fileSuffixStr="ILP";
+        }
+        else if(Configurations.schedulerPolicy==4) {
+            fileSuffixStr="RR";
+        }
     }
 
     static void finishCurrentJob(Job currentJob) {
@@ -138,7 +159,7 @@ public class Controller {
 
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
 
-        long schedulingDelay=System.currentTimeMillis();
+        double schedulingDelay=System.currentTimeMillis();
         //Choose Scheduler
         if(Configurations.schedulerPolicy==1){
             jobWaiting=!FirstFitScheduler.findSchedule(newJob);
@@ -156,10 +177,12 @@ public class Controller {
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
             System.out.println("invalid scheduling policy");
         }
-        schedulingDelay=(System.currentTimeMillis()-schedulingDelay)/1000;
-        if(!jobWaiting)
-        {
-            newJob.setSchedulingDelay(schedulingDelay);
+        schedulingDelay=(System.currentTimeMillis()-schedulingDelay)/1000.0;
+
+        newJob.setSchedulingDelay(newJob.getSchedulingDelay()+schedulingDelay);
+
+        if(jobWaiting){
+            newJob.setWaited(true);
         }
         System.out.println("Scheduling Delay: "+schedulingDelay+" second");
     }
@@ -168,7 +191,7 @@ public class Controller {
     {
         PrintWriter pw=null;
         try {
-            pw = new PrintWriter(new File(Configurations.simulatorHome+"/jobs.csv"));
+            pw = new PrintWriter(new File(Configurations.simulatorHome+"/jobs_"+fileSuffixStr+".csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -244,7 +267,7 @@ public class Controller {
     {
         PrintWriter pw=null;
         try {
-            pw = new PrintWriter(new File(Configurations.simulatorHome+"/VMs.csv"));
+            pw = new PrintWriter(new File(Configurations.simulatorHome+"/VMs_"+fileSuffixStr+".csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

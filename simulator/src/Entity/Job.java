@@ -17,6 +17,16 @@ public class Job {
     private long T_est;
     private double schedulingDelay;
     private boolean deadlineMet;
+    private boolean waited;
+
+    public boolean isWaited() {
+        return waited;
+    }
+
+    public void setWaited(boolean waited) {
+        this.waited = waited;
+    }
+
     private ArrayList<String> placementList = new ArrayList<String>();
 
     public String getJobID() {

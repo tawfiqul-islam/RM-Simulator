@@ -21,8 +21,16 @@ public class CSVReader {
         String csvSplitBy = ",";
 
         try {
-
-            br = new BufferedReader(new FileReader(Configurations.simulatorHome + "/workload_jobs.csv"));
+            String workloadFileStr;
+            if(Configurations.jobArrival==1)
+            {
+                workloadFileStr="/workload_jobs_low_load.csv";
+            }
+            else
+            {
+                workloadFileStr="/workload_jobs_high_load.csv";
+            }
+            br = new BufferedReader(new FileReader(Configurations.simulatorHome +workloadFileStr));
             //for skipping the header row
             br.readLine();
             //jobs
