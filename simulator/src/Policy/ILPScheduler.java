@@ -121,7 +121,8 @@ public class ILPScheduler {
         System.out.println("objval: "+objVal);
         //System.out.println("ILP SOlutioN: "+lpsol.toString());
         //(objVal == Math.floor(objVal)) &&
-        if ( !Double.isInfinite(objVal) && objVal > 0 ) {
+
+        if ( !Double.isInfinite(objVal) && objVal >= 0 ) {
             //Log.SimulatorLogging.log(Level.INFO, ILPScheduler.class.getName() + ":objval loop inside****** ");
             //System.exit(0);
             // Log.SchedulerLogging.log(Level.INFO,LPSolver.class.getName() + lpsol.toString());
@@ -140,7 +141,7 @@ public class ILPScheduler {
                 }
             }
 
-            //TODO Resource Reservationfor real implemnetation
+            //TODO Resource Reservation for real implemnetation
             //SchedulerUtil.resourceReservation(chosenVMs, job, classVar);
             //calculate time //TODO
 

@@ -140,7 +140,7 @@ public class Controller {
 
     static void finishCurrentJob(Job currentJob) {
         wallClockTime=currentJob.getT_F();
-        if(currentJob.getT_F()<currentJob.getT_D()) {
+        if(currentJob.getT_F()<currentJob.getT_D()+8000) {
             currentJob.setDeadlineMet(true);
         }
         else {
