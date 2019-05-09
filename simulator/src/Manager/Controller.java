@@ -25,6 +25,7 @@ public class Controller {
     public static ArrayList<VM> vmList = new ArrayList<>();
     public static PriorityQueue<Job> activeJobs = new PriorityQueue<Job>(5,Utility.JobComparator);
     public static ArrayList<Job> finishedJobs = new ArrayList<>();
+    public static ArrayList<Job> failedJobs = new ArrayList<>();
     public static boolean jobWaiting=false;
     public static double totalCost=0;
     public static double deadlineMet=0;
@@ -114,9 +115,10 @@ public class Controller {
         }
 
         System.out.println("\n\n***Total Cost for the Scheduler: "+totalCost+"$");
-        System.out.println("\n\n***Deadline Met: "+(deadlineMet/finishedJobs.size())*100+"%");
+        System.out.println("\n\n***Deadline Met: "+deadlineMet+" Percentage: "+(deadlineMet/(finishedJobs.size()+failedJobs.size()))*100+"%");
         System.out.println("\n\n***Average Scheduling Delay: "+schedulingDelayTotal/finishedJobs.size()+" seconds");
         System.out.println("\n\n***Job Waited: "+jobWaitedTotal);
+        System.out.println("\n\n***Failed Jobs: "+failedJobs.size());
         setFileStrSuffix();
         writeJobResults();
         writeVMResults();
@@ -159,6 +161,16 @@ public class Controller {
 
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
 
+        if(Configurations.failedJobQueue==1) {
+            if (wallClockTime + newJob.getT_est() > newJob.getT_D() + 8000) {
+                newJob.setDeadlineMet(false);
+                jobList.remove(newJob);
+                failedJobs.add(newJob);
+                jobWaiting = false;
+
+                return;
+            }
+        }
         double schedulingDelay=System.currentTimeMillis();
         //Choose Scheduler
         if(Configurations.schedulerPolicy==1){

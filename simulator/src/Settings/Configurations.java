@@ -14,10 +14,12 @@ public class Configurations {
     public static int queuePolicy;
     public static int schedulerPolicy;
 
+
     public static double resourceSplitThreshold=0.2;
 
     public static int jobTotal;
     public static int jobArrival;
+    public static int failedJobQueue;
     public static int poissonMean;
     public static double lambda;
     public static int deadlineTolerance;
