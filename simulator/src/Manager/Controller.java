@@ -142,7 +142,7 @@ public class Controller {
 
     static void finishCurrentJob(Job currentJob) {
         wallClockTime=currentJob.getT_F();
-        if(currentJob.getT_F()<currentJob.getT_D()+8000) {
+        if(currentJob.getT_F()<currentJob.getT_D()+Configurations.deadlineTolerance) {
             currentJob.setDeadlineMet(true);
         }
         else {
@@ -162,7 +162,7 @@ public class Controller {
         wallClockTime=Math.max(newJob.getT_A(),wallClockTime);
 
         if(Configurations.failedJobQueue==1) {
-            if (wallClockTime + newJob.getT_est() > newJob.getT_D() + 8000) {
+            if (wallClockTime + newJob.getT_est() > newJob.getT_D() + Configurations.deadlineTolerance) {
                 newJob.setDeadlineMet(false);
                 jobList.remove(newJob);
                 failedJobs.add(newJob);
