@@ -2,10 +2,7 @@ package Manager;
 
 import Entity.Job;
 import Entity.VM;
-import Policy.FirstFitScheduler;
-import Policy.GIOScheduler;
-import Policy.ILPScheduler;
-import Policy.RRScheduler;
+import Policy.*;
 import Settings.Configurations;
 import Workload.CSVReader;
 import Workload.SimpleGen;
@@ -138,6 +135,9 @@ public class Controller {
         else if(Configurations.schedulerPolicy==4) {
             fileSuffixStr="RR";
         }
+        else if(Configurations.schedulerPolicy==5) {
+            fileSuffixStr="RRC";
+        }
     }
 
     static void finishCurrentJob(Job currentJob) {
@@ -184,6 +184,9 @@ public class Controller {
         }
         else if(Configurations.schedulerPolicy==4) {
             jobWaiting=!RRScheduler.findSchedule(newJob);
+        }
+        else if(Configurations.schedulerPolicy==5) {
+            jobWaiting=!RRConsolidate.findSchedule(newJob);
         }
         else{
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");

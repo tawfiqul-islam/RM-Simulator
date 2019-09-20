@@ -44,6 +44,20 @@ public class Utility {
         }
     }
 
+    public static class VMComparatorConsolidate implements Comparator<VM> {
+        @Override
+        public int compare(VM a, VM b) {
+
+
+            if(a.getC_free()<b.getC_free()) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
     public static class JobComparatorEDFplusFCFS implements Comparator<Job> {
         @Override
         public int compare(Job a, Job b) {

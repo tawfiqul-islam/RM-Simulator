@@ -20,6 +20,7 @@ public class VM {
     private long T_S;
     private double cost;
     private double resourceTotal;
+    private int turnedOnOFF;
 
     private ArrayList<Job> allocationList = new ArrayList<>();
 
@@ -145,6 +146,14 @@ public class VM {
         this.resourceTotal = C_free * (1- Configurations.resourceSplitThreshold) + M_free * Configurations.resourceSplitThreshold;
     }
 
+    public int getTurnedOnOFF() {
+        return turnedOnOFF;
+    }
+
+    public void setTurnedOnOFF(int turnedOnOFF) {
+        this.turnedOnOFF = turnedOnOFF;
+    }
+
     @Override
     public String toString() {
         return "VM{" +
@@ -158,6 +167,7 @@ public class VM {
                 ", isActive=" + isActive +
                 ", isLocal=" + isLocal +
                 ", T_used=" + T_used +
+                ", TurnedOnOff=" + turnedOnOFF +
                 ", cost=" + cost +
                 '}';
     }

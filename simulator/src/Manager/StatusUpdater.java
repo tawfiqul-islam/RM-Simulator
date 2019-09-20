@@ -11,6 +11,7 @@ public class StatusUpdater {
         vm.setM_free(vm.getM_free()-job.getM());
         vm.setMaxT(Math.max(vm.getMaxT(),Controller.wallClockTime+job.getT_est()));
         if(!vm.isActive()) {
+            vm.setTurnedOnOFF(vm.getTurnedOnOFF()+1);
             vm.setActive(true);
             vm.setT_S(Controller.wallClockTime);
         }
