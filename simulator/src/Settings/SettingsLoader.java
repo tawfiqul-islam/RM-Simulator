@@ -35,6 +35,7 @@ public class SettingsLoader {
             Configurations.jobTotal=Integer.parseInt(prop.getProperty("job.total"));
             Configurations.jobArrival=Integer.parseInt(prop.getProperty("job.arrival"));
             Configurations.failedJobQueue=Integer.parseInt(prop.getProperty("failed.queue"));
+            Configurations.networkPenalty=Double.parseDouble(prop.getProperty("network.penalty"));
             Configurations.poissonMean=Integer.parseInt(prop.getProperty("poisson.mean"));
             Configurations.lambda=Double.parseDouble(prop.getProperty("lambda"));
             Configurations.deadlineTolerance=Integer.parseInt(prop.getProperty("deadline.tolerance"));

@@ -16,6 +16,7 @@ public class ILPScheduler {
 
     public static boolean findSchedule(Job job) {
 
+        SchedulerUtility.savePrevMaxT();
         /*System.out.println("VM status before ILP");
         for (int i= 0;i< Controller.vmList.size();i++) {
             System.out.println(Controller.vmList.get(i));

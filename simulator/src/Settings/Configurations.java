@@ -20,6 +20,7 @@ public class Configurations {
     public static int jobTotal;
     public static int jobArrival;
     public static int failedJobQueue;
+    public static double networkPenalty;
     public static int poissonMean;
     public static double lambda;
     public static int deadlineTolerance;

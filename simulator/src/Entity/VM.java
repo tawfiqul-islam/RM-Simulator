@@ -101,7 +101,6 @@ public class VM {
     }
 
     public void setMaxT(long maxT) {
-        setPrevMaxT(0);
         this.maxT = maxT;
     }
 

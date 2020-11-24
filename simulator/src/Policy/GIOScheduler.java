@@ -11,6 +11,7 @@ public class GIOScheduler {
 
     public static boolean findSchedule(Job job) {
 
+        SchedulerUtility.savePrevMaxT();
         int j=0;
         while(true) {
 

@@ -10,12 +10,27 @@ public class StatusUpdater {
         vm.setC_free(vm.getC_free()-job.getC());
         vm.setM_free(vm.getM_free()-job.getM());
         vm.setMaxT(Math.max(vm.getMaxT(),Controller.wallClockTime+job.getT_est()));
+
         if(!vm.isActive()) {
             vm.setTurnedOnOFF(vm.getTurnedOnOFF()+1);
             vm.setActive(true);
             vm.setT_S(Controller.wallClockTime);
         }
     }
+
+    public static void subtractVMresourceV2(VM vm, Job job, long durationIncrease) {
+
+        vm.setC_free(vm.getC_free()-job.getC());
+        vm.setM_free(vm.getM_free()-job.getM());
+        vm.setMaxT(Math.max(vm.getMaxT(),Controller.wallClockTime+job.getT_est()+durationIncrease));
+
+        if(!vm.isActive()) {
+            vm.setTurnedOnOFF(vm.getTurnedOnOFF()+1);
+            vm.setActive(true);
+            vm.setT_S(Controller.wallClockTime);
+        }
+    }
+
 
     public static void addVMresource(VM vm, Job job){
 

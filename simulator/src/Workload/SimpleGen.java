@@ -144,6 +144,7 @@ public class SimpleGen {
             vm1.setM_free(16);
             vm1.setActive(false);
             vm1.setMaxT(0);
+            vm1.setPrevMaxT(0);
             vm1.setLocal(false);
             vm1.setPrice(Configurations.cloudVMPrice1);
             //vm1.setVmID(UUID.randomUUID().toString());
@@ -162,6 +163,7 @@ public class SimpleGen {
             vm2.setM_free(32);
             vm2.setActive(false);
             vm2.setMaxT(0);
+            vm2.setPrevMaxT(0);
             vm2.setLocal(false);
             vm2.setPrice(Configurations.cloudVMPrice2);
             //vm2.setVmID(UUID.randomUUID().toString());
@@ -180,6 +182,7 @@ public class SimpleGen {
             vm3.setM_free(48);
             vm3.setActive(false);
             vm3.setMaxT(0);
+            vm3.setPrevMaxT(0);
             vm3.setLocal(false);
             vm3.setPrice(Configurations.cloudVMPrice3);
             //vm3.setVmID(UUID.randomUUID().toString());
@@ -200,6 +203,7 @@ public class SimpleGen {
             vm1.setM_free(16);
             vm1.setActive(false);
             vm1.setMaxT(0);
+            vm1.setPrevMaxT(0);
             vm1.setLocal(true);
             vm1.setPrice(Configurations.localVMPrice1);
             //vm1.setVmID(UUID.randomUUID().toString());
@@ -218,6 +222,7 @@ public class SimpleGen {
             vm2.setM_free(32);
             vm2.setActive(false);
             vm2.setMaxT(0);
+            vm2.setPrevMaxT(0);
             vm2.setLocal(true);
             vm2.setPrice(Configurations.localVMPrice2);
             //vm2.setVmID(UUID.randomUUID().toString());
@@ -236,6 +241,7 @@ public class SimpleGen {
             vm3.setM_free(48);
             vm3.setActive(false);
             vm3.setMaxT(0);
+            vm3.setPrevMaxT(0);
             vm3.setLocal(true);
             vm3.setPrice(Configurations.localVMPrice3);
             //vm3.setVmID(UUID.randomUUID().toString());

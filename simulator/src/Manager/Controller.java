@@ -23,6 +23,7 @@ public class Controller {
     public static PriorityQueue<Job> activeJobs = new PriorityQueue<Job>(5,Utility.JobComparator);
     public static ArrayList<Job> finishedJobs = new ArrayList<>();
     public static ArrayList<Job> failedJobs = new ArrayList<>();
+    public static ArrayList<Job> capacityExceededJobs = new ArrayList<>();
     public static boolean jobWaiting=false;
     public static double totalCost=0;
     public static double deadlineMet=0;
@@ -116,6 +117,9 @@ public class Controller {
         System.out.println("\n\n***Average Scheduling Delay: "+schedulingDelayTotal/finishedJobs.size()+" seconds");
         System.out.println("\n\n***Job Waited: "+jobWaitedTotal);
         System.out.println("\n\n***Failed Jobs: "+failedJobs.size());
+        System.out.println("\n\n***Capacity Exceeded Jobs: "+capacityExceededJobs.size());
+        for(int i=0;i<capacityExceededJobs.size();i++)
+            System.out.println(capacityExceededJobs.get(i).getJobID());
         setFileStrSuffix();
         writeJobResults();
         writeVMResults();
@@ -137,6 +141,12 @@ public class Controller {
         }
         else if(Configurations.schedulerPolicy==5) {
             fileSuffixStr="RRC";
+        }
+        else if(Configurations.schedulerPolicy==6) {
+            fileSuffixStr="LS";
+        }
+        else if(Configurations.schedulerPolicy==7) {
+            fileSuffixStr="AQS";
         }
     }
 
@@ -187,6 +197,12 @@ public class Controller {
         }
         else if(Configurations.schedulerPolicy==5) {
             jobWaiting=!RRConsolidate.findSchedule(newJob);
+        }
+        else if(Configurations.schedulerPolicy==6) {
+            jobWaiting=!LocalityScheduler.findSchedule(newJob);
+        }
+        else if(Configurations.schedulerPolicy==7) {
+            jobWaiting=!AQSScheduler.findSchedule(newJob);
         }
         else{
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
