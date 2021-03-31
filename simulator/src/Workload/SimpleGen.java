@@ -48,7 +48,7 @@ public class SimpleGen {
         int T_A=0;
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new File(Configurations.simulatorHome + "/workload_jobs.csv"));
+            pw = new PrintWriter(new File(Configurations.simulatorHome + "/ls_workload_jobs_low.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -73,11 +73,11 @@ public class SimpleGen {
 
             sb.append("job-" + i); //job-id
             sb.append(',');
-            sb.append(1 + ran.nextInt(6));//cores
+            sb.append(1 + ran.nextInt(4));//cores
             sb.append(',');
-            sb.append(4 + ran.nextInt(9));//memory
+            sb.append(4 + ran.nextInt(8));//memory
             sb.append(',');
-            sb.append(1 + ran.nextInt(8));//executors
+            sb.append(1 + ran.nextInt(4));//executors
             sb.append(',');
             T_A+=getPoissonRandom(Configurations.poissonMean);
             sb.append(T_A);

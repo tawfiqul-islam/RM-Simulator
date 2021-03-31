@@ -28,7 +28,7 @@ public class Controller {
     public static double totalCost=0;
     public static double deadlineMet=0;
     public static double schedulingDelayTotal=0;
-
+    public static double averageJobDuration=0;
     public static int jobWaitedTotal=0;
     public static String fileSuffixStr;
 
@@ -92,6 +92,7 @@ public class Controller {
         deadlineMet=0;
         totalCost=0;
         schedulingDelayTotal=0;
+        averageJobDuration=0;
         System.out.println("\n\n*********** JOBS ***********\n\n");
         for(int i=0;i<finishedJobs.size();i++) {
             if(finishedJobs.get(i).isDeadlineMet()) {
@@ -101,6 +102,7 @@ public class Controller {
                 jobWaitedTotal+=1;
             }
             schedulingDelayTotal+=finishedJobs.get(i).getSchedulingDelay();
+            averageJobDuration+=finishedJobs.get(i).getT_F() - finishedJobs.get(i).getT_A();
             System.out.println(finishedJobs.get(i).toString());
         }
 
@@ -118,6 +120,7 @@ public class Controller {
         System.out.println("\n\n***Job Waited: "+jobWaitedTotal);
         System.out.println("\n\n***Failed Jobs: "+failedJobs.size());
         System.out.println("\n\n***Capacity Exceeded Jobs: "+capacityExceededJobs.size());
+        System.out.println("\n\n***Average Job duration: "+averageJobDuration/1000);
         for(int i=0;i<capacityExceededJobs.size();i++)
             System.out.println(capacityExceededJobs.get(i).getJobID());
         setFileStrSuffix();
