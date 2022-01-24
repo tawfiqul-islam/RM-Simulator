@@ -17,6 +17,8 @@ class SchedulerUtility {
             job.setT_S(Controller.wallClockTime);
             job.setT_W(job.getT_S()-job.getT_A());
 
+            //for hybrid cloud scheduling
+            /*
             for(int i=0;i<job.getPlacementList().size();i++)  {
                 if (job.getPlacementList().get(i).contains("C")) {
                     hybridPlacement=true;
@@ -27,6 +29,30 @@ class SchedulerUtility {
             {
                 double durationIncrease=job.getT_est()* Configurations.networkPenalty;
                 job.setT_est(job.getT_est()+(long)durationIncrease);
+            }*/
+
+            //for DRL scheduling
+            hybridPlacement=true;
+            String tmp=job.getPlacementList().get(0);
+            for(int i=1;i<job.getPlacementList().size();i++)  {
+                if (!job.getPlacementList().get(i).equals(tmp)) {
+                    hybridPlacement=false;
+                    break;
+                }
+            }
+            if(hybridPlacement&&job.getType()!=3)
+            {
+                double durationIncrease=job.getT_est()* Configurations.networkPenalty;
+                job.setT_est(job.getT_est()+(long)durationIncrease);
+                job.setFineExecutorPlaced(false);
+            }
+            else if(!hybridPlacement&&job.getType()==3){
+                double durationIncrease=job.getT_est()* Configurations.networkPenalty;
+                job.setT_est(job.getT_est()+(long)durationIncrease);
+                job.setFineExecutorPlaced(false);
+            }
+            else{
+                job.setFineExecutorPlaced(true);
             }
             job.setT_F(job.getT_S()+job.getT_est());
 

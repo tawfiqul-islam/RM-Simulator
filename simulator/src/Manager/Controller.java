@@ -30,6 +30,8 @@ public class Controller {
     public static double schedulingDelayTotal=0;
     public static double averageJobDuration=0;
     public static int jobWaitedTotal=0;
+    public static int finegrainedplacement=0;
+
     public static String fileSuffixStr;
 
     public static void main(String args[]) {
@@ -93,6 +95,7 @@ public class Controller {
         totalCost=0;
         schedulingDelayTotal=0;
         averageJobDuration=0;
+        finegrainedplacement=0;
         System.out.println("\n\n*********** JOBS ***********\n\n");
         for(int i=0;i<finishedJobs.size();i++) {
             if(finishedJobs.get(i).isDeadlineMet()) {
@@ -100,6 +103,9 @@ public class Controller {
             }
             if(finishedJobs.get(i).isWaited()) {
                 jobWaitedTotal+=1;
+            }
+            if(finishedJobs.get(i).isFineExecutorPlaced()) {
+                finegrainedplacement+=1;
             }
             schedulingDelayTotal+=finishedJobs.get(i).getSchedulingDelay();
             averageJobDuration+=finishedJobs.get(i).getT_F() - finishedJobs.get(i).getT_A();
@@ -121,6 +127,7 @@ public class Controller {
         System.out.println("\n\n***Failed Jobs: "+failedJobs.size());
         System.out.println("\n\n***Capacity Exceeded Jobs: "+capacityExceededJobs.size());
         System.out.println("\n\n***Average Job duration: "+averageJobDuration/1000);
+        System.out.println("\n\n***Good placements: "+finegrainedplacement);
         for(int i=0;i<capacityExceededJobs.size();i++)
             System.out.println(capacityExceededJobs.get(i).getJobID());
         setFileStrSuffix();
@@ -150,6 +157,9 @@ public class Controller {
         }
         else if(Configurations.schedulerPolicy==7) {
             fileSuffixStr="AQS";
+        }
+        else if(Configurations.schedulerPolicy==8) {
+            fileSuffixStr="AEP";
         }
     }
 
@@ -207,6 +217,10 @@ public class Controller {
         else if(Configurations.schedulerPolicy==7) {
             jobWaiting=!AQSScheduler.findSchedule(newJob);
         }
+        else if(Configurations.schedulerPolicy==8) {
+            jobWaiting=!AEPScheduler.findSchedule(newJob);
+        }
+
         else{
             Log.SimulatorLogging.log(Level.SEVERE,Controller.class.getName()+" Invalid/No scheduling policy provided");
             System.out.println("invalid scheduling policy");

@@ -18,6 +18,8 @@ public class Job {
     private double schedulingDelay;
     private boolean deadlineMet;
     private boolean waited;
+    private int type;
+    private boolean fineExecutorPlaced;
 
     public boolean isWaited() {
         return waited;
@@ -127,6 +129,22 @@ public class Job {
 
     public void addplacementVM(String vmID) {
         placementList.add(vmID);
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public boolean isFineExecutorPlaced() {
+        return fineExecutorPlaced;
+    }
+
+    public void setFineExecutorPlaced(boolean fineExecutorPlaced) {
+        this.fineExecutorPlaced = fineExecutorPlaced;
     }
 
     public ArrayList<String> getPlacementList() {

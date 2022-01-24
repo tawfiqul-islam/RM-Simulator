@@ -24,11 +24,11 @@ public class CSVReader {
             String workloadFileStr;
             if(Configurations.jobArrival==1)
             {
-                workloadFileStr="/workload_jobs_low_load.csv";
+                workloadFileStr="/jobs_drl.csv";
             }
             else
             {
-                workloadFileStr="/workload_jobs_high_load.csv";
+                workloadFileStr="/jobs_drl_burst.csv";
             }
             br = new BufferedReader(new FileReader(Configurations.simulatorHome +workloadFileStr));
             //for skipping the header row
@@ -45,6 +45,7 @@ public class CSVReader {
                 job.setT_A(Long.parseLong(parsedStr[4]));
                 job.setT_est(Long.parseLong(parsedStr[5]));
                 job.setT_D(Long.parseLong(parsedStr[6]));
+                job.setType(Integer.parseInt(parsedStr[7]));
                 job.setT_W(0);
                 Controller.jobList.add(job);
                 i++;
